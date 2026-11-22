@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Vem aí a 1ª Copa Bara de FIFA. Faça sua inscrição.">
+<meta property="og:title" content="Copa BARA · Vem aí!">
+<meta property="og:description" content="1ª Copa Bara de FIFA. Inscrições abertas.">
+<meta property="og:image" content="/og.png">
+<meta name="theme-color" content="#0A2387">
+<link rel="icon" href="/logo.webp" type="image/webp">
+<title>Copa BARA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: a printed match poster. Paper ground with grain, a navy slab carrying "VEM AÍ!", the shield's black waves as a big graphic, an LED-board ticker of clubs, and a perforated entry ticket for the form. Deliberately one look (printed poster), same in light and dark hosts. */
+:root{
+  color-scheme:light;
+  --paper:#F4F4F1; --ink:#0B0D12; --navy:#0A2387; --navy-deep:#06165C; --sky:#1C9BEF; --gold:#FFB000; --red:#E3122D;
+  --grey:#5B5F69; --rule:#0B0D12; --field:#FFFFFF; --ok:#0F7A4F; --err:#C40E27;
+  --poster:"Anton","Impact","Haettenschweiler","Arial Narrow Bold",sans-serif;
+  --cond:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+img{max-width:100%}
+[hidden]{display:none!important}
+html{background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;position:relative}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.22;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+/* top strip */
+.topline{background:var(--ink);color:var(--paper);font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:.8rem;
+  margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px)}
+.topline .wrap{display:flex;justify-content:space-between;gap:12px;padding-block:7px}
+
+/* poster */
+.poster{position:relative;background:var(--navy);color:#fff;overflow:hidden;isolation:isolate}
+.poster .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 32px;padding-block:28px 0}
+.waves{position:absolute;z-index:-1;right:-6%;bottom:-8%;width:min(78%,720px);color:var(--navy-deep)}
+.kicker{grid-column:1/-1;display:flex;align-items:center;gap:12px;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.16em;font-size:.86rem}
+.kicker i{flex:0 0 42px;height:3px;background:var(--gold)}
+.vem{font-family:var(--poster);font-weight:400;text-transform:uppercase;line-height:.94;margin:0;letter-spacing:.005em;
+  font-size:clamp(5.4rem,23vw,15.5rem);transform:rotate(-4deg);transform-origin:left bottom;margin:18px 0 0 -4px;
+  text-shadow:6px 6px 0 var(--ink)}
+.vem .ai{color:var(--gold)}
+.shield{align-self:center;width:clamp(110px,20vw,210px);transform:rotate(6deg);filter:drop-shadow(8px 8px 0 rgba(0,0,0,.45))}
+.billing{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:stretch;margin-top:26px;border-top:3px solid #fff}
+.billing > div{padding:14px 22px 18px 0;margin-right:22px}
+.billing > div + div{border-left:3px solid #fff;padding-left:22px}
+.billing small{display:block;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.16em;font-size:.78rem;color:var(--gold)}
+.billing b{display:block;font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(1.6rem,4.6vw,2.4rem);line-height:1;margin-top:4px}
+.billing span{display:block;font-size:.95rem;opacity:.9;max-width:34ch;margin-top:4px}
+.edge{display:grid;grid-template-columns:1fr 1fr 1fr;height:10px}
+.edge i:nth-child(1){background:var(--gold)} .edge i:nth-child(2){background:var(--sky)} .edge i:nth-child(3){background:var(--red)}
+@media (max-width:620px){
+  .poster .wrap{grid-template-columns:1fr}
+  .shield{position:absolute;right:16px;top:58px;width:92px}
+  .vem{margin-top:70px}
+  .billing > div{flex:1 1 100%;margin-right:0;padding-right:0}
+  .billing > div + div{border-left:0;border-top:3px solid #fff;padding-left:0}
+  .go{font-size:1.25rem}
+  #clubs-n{display:none}
+}
+
+/* LED ticker */
+.ticker{background:var(--ink);color:#fff;overflow:hidden;border-bottom:3px solid var(--ink)}
+.ticker-head{display:flex;align-items:center;gap:10px;font-family:var(--cond);font-weight:800;text-transform:uppercase;letter-spacing:.14em;font-size:.78rem;color:var(--gold);padding-block:10px 0}
+.ticker-head span{color:#9EA3AE;font-weight:600;letter-spacing:.08em}
+.lane{display:flex;width:max-content;animation:run 90s linear infinite;padding-block:10px}
+.lane.b{animation-duration:110s;animation-direction:reverse;border-top:1px solid #23262E}
+.ticker:hover .lane{animation-play-state:paused}
+@keyframes run{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.club{display:inline-flex;align-items:center;gap:10px;padding:0 22px;white-space:nowrap;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:1.15rem;border-right:1px solid #2C3039}
+.club .crest{width:24px;height:28px;flex:none}
+.club .crest text{font-family:var(--cond);font-weight:800}
+.club em{font-style:normal;color:#8D93A0;font-weight:600;font-size:.9rem}
+@media (prefers-reduced-motion:reduce){.lane{animation:none;flex-wrap:wrap;width:auto;row-gap:10px}.lane .dup{display:none}}
+
+/* entry ticket */
+main{padding-block:48px 40px}
+.entry{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);border:3px solid var(--ink);background:var(--field);box-shadow:10px 10px 0 var(--ink);max-width:900px;margin:0 auto}
+.stub{position:relative;background:var(--gold);padding:26px 24px;border-right:3px dashed var(--ink);display:flex;flex-direction:column;gap:14px}
+.stub h2{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2.4rem,6vw,3.4rem);line-height:.9;margin:0}
+.stub p{margin:0;font-weight:500;max-width:30ch}
+.stub .no{margin-top:auto;font-family:var(--cond);font-weight:800;text-transform:uppercase;letter-spacing:.14em;font-size:.8rem;display:flex;justify-content:space-between;border-top:2px solid var(--ink);padding-top:10px}
+.stub .no b{font-family:var(--poster);font-weight:400;font-size:1.6rem;letter-spacing:.02em;line-height:1;font-variant-numeric:tabular-nums}
+form,.done{padding:26px 26px 28px;display:grid;gap:20px;align-content:start}
+.field{display:grid;gap:4px}
+.field label{font-family:var(--cond);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:.82rem}
+.field input{border:0;border-bottom:3px solid var(--ink);background:transparent;padding:8px 0 6px;font-size:1.15rem;font-weight:600;border-radius:0;width:100%}
+.field input::placeholder{color:#A3A7B0;font-weight:500}
+.field input:focus{outline:none;border-bottom-color:var(--navy);background:linear-gradient(transparent 85%,rgba(10,35,135,.08) 85%)}
+.field input[aria-invalid="true"]{border-bottom-color:var(--err)}
+.hint{font-size:.84rem;color:var(--grey)}
+.err{color:var(--err);font-size:.86rem;font-weight:700}
+.err:empty{display:none}
+.go{display:flex;justify-content:space-between;align-items:center;gap:10px;border:0;background:var(--ink);color:#fff;padding:16px 20px;cursor:pointer;
+  font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(1.15rem,4.8vw,1.5rem);white-space:nowrap;letter-spacing:.03em;text-decoration:none;width:100%;
+  box-shadow:inset 0 -6px 0 var(--red)}
+.go:hover{background:var(--navy)}
+.go:disabled{opacity:.6;cursor:wait}
+.go svg{flex:none}
+.go.wa{background:#128C46;box-shadow:inset 0 -6px 0 var(--ink)}
+.go.wa:hover{background:#0E7339}
+.go[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+.done h3{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2rem,6vw,2.8rem);line-height:.95;margin:0}
+.done h3 span{color:var(--ok)}
+.done p{margin:0;max-width:44ch}
+@media (max-width:720px){
+  .entry{grid-template-columns:1fr;box-shadow:6px 6px 0 var(--ink)}
+  .stub{border-right:0;border-bottom:3px dashed var(--ink)}
+}
+footer{border-top:3px solid var(--ink)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-block:14px 22px;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:.8rem;color:var(--grey)}
+</style>
+
+</head>
+<body>
+<div class="topline"><div class="wrap"><span>Copa BARA</span><span>EA Sports FC 26</span></div></div>
+
+<header class="poster">
+  <svg class="waves" viewBox="0 0 400 260" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="34" stroke-linecap="round"><path d="M170 30c60-6 120-22 200-30"/><path d="M30 100c110 0 170-50 340-56"/><path d="M30 168c110 0 170-50 340-56"/><path d="M150 234c70-6 130-40 220-46"/></g></svg>
+  <div class="wrap">
+    <div class="kicker"><i></i>Inscrições abertas</div>
+    <h1 class="vem">Vem<br>a<span class="ai">í!</span></h1>
+    <img class="shield" src="logo.webp" alt="Escudo da Copa BARA">
+    <div class="billing">
+      <div><small>Edição</small><b>1ª Copa Bara de FIFA</b></div>
+      <div><small>Data</small><b>A definir</b><span>Será definida quando todas as inscrições forem preenchidas.</span></div>
+    </div>
+  </div>
+  <div class="edge"><i></i><i></i><i></i></div>
+</header>
+
+<section class="ticker" aria-labelledby="clubs-h">
+  <div class="wrap ticker-head"><span id="clubs-h" style="color:inherit;font-weight:800;letter-spacing:.14em">Clubes da Copa</span><span id="clubs-n"></span></div>
+  <div id="lanes"></div>
+</section>
+
+<main class="wrap" id="inscricao">
+  <div class="entry">
+    <div class="stub">
+      <h2>Ficha de inscrição</h2>
+      <p>Preenche aí pra gente saber quem vai jogar. Depois é só entrar no grupo da Copa no WhatsApp.</p>
+      <div class="no"><span>Inscritos</span><b id="count">0</b></div>
+    </div>
+    <form id="reg" novalidate>
+      <div class="field"><label for="f-name">Nome</label><input id="f-name" name="name" maxlength="40" autocomplete="name" placeholder="Como a galera te chama"><span class="err" id="e-name"></span></div>
+      <div class="field"><label for="f-tag">ID no jogo</label><input id="f-tag" name="tag" maxlength="30" placeholder="PSN, Xbox ou EA ID"><span class="err" id="e-tag"></span></div>
+      <div class="field"><label for="f-phone">WhatsApp</label><input id="f-phone" name="phone" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(11) 90000-0000"><span class="hint">Só a organização vê.</span><span class="err" id="e-phone"></span></div>
+      <button class="go" type="submit">Confirmar inscrição <svg width="28" height="20" viewBox="0 0 28 20" aria-hidden="true"><path d="M0 10h24M16 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3.5"/></svg></button>
+    </form>
+    <div class="done" id="done" hidden>
+      <h3 id="done-title">Tá dentro!</h3>
+      <p>Agora entra no grupo da Copa BARA no WhatsApp. É lá que sai a data, o sorteio dos times e a tabela.</p>
+      <a class="go wa" id="wa" href="#" target="_blank" rel="noopener">Entrar no grupo <svg width="28" height="20" viewBox="0 0 28 20" aria-hidden="true"><path d="M0 10h24M16 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3.5"/></svg></a>
+      <span class="hint" id="wa-note"></span>
+    </div>
+  </div>
+</main>
+<footer><div class="wrap"><span>1ª Copa Bara de FIFA</span><span>Inscrições abertas</span></div></footer>
+
+<script>
+(function(){
+"use strict";
+
+const TEAMS=[["Bournemouth","BOU","#DA291C","#111111","ING"],["Brighton","BHA","#0057B8","#FFFFFF","ING"],["Crystal Palace","CRY","#1B458F","#C4122E","ING"],["West Ham","WHU","#7A263A","#1BB1E7","ING"],["Brentford","BRE","#E30613","#FFFFFF","ING"],["Fulham","FUL","#FFFFFF","#111111","ING"],["Everton","EVE","#003399","#FFFFFF","ING"],["Leeds United","LEE","#FFFFFF","#1D428A","ING"],["Wolverhampton","WOL","#FDB913","#231F20","ING"],
+["Real Betis","BET","#00954C","#FFFFFF","ESP"],["Real Sociedad","RSO","#0067B1","#FFFFFF","ESP"],["Villarreal","VIL","#FFE667","#005187","ESP"],["Girona","GIR","#CD2534","#FFFFFF","ESP"],["Mallorca","MLL","#E20613","#111111","ESP"],["Rayo Vallecano","RAY","#FFFFFF","#E53027","ESP"],["Celta de Vigo","CEL","#8AC3EE","#FFFFFF","ESP"],["Getafe","GET","#005999","#FFFFFF","ESP"],["Osasuna","OSA","#D91A21","#0A346F","ESP"],["Sevilla","SEV","#FFFFFF","#D4001F","ESP"],["Valencia","VAL","#FFFFFF","#EE7F00","ESP"],
+["Bologna","BOL","#1A2F48","#A21C26","ITA"],["Fiorentina","FIO","#482E92","#FFFFFF","ITA"],["Torino","TOR","#881F19","#FFFFFF","ITA"],["Como","COM","#1B3F8B","#FFFFFF","ITA"],
+["Eintracht Frankfurt","SGE","#E1000F","#111111","ALE"],["VfB Stuttgart","VFB","#FFFFFF","#E32219","ALE"],["Wolfsburg","WOB","#65B32E","#FFFFFF","ALE"],["Borussia Mönchengladbach","BMG","#111111","#00A650","ALE"],["Freiburg","SCF","#111111","#E2001A","ALE"],["Hoffenheim","TSG","#1961B5","#FFFFFF","ALE"],["Augsburg","FCA","#BA3733","#46714D","ALE"],["Mainz 05","M05","#ED1C24","#FFFFFF","ALE"],["Werder Bremen","SVW","#1D9053","#FFFFFF","ALE"],
+["Monaco","ASM","#E7192B","#FFFFFF","FRA"],["Olympique de Marseille","OM","#2FAEE0","#FFFFFF","FRA"],["Lille","LIL","#E01E13","#24216A","FRA"],["Nice","NIC","#C8102E","#111111","FRA"],["Olympique Lyonnais","OL","#FFFFFF","#1D3A8F","FRA"],["Rennes","REN","#E13327","#111111","FRA"],
+["Benfica","SLB","#E20E0E","#FFFFFF","POR"],["Porto","FCP","#00428C","#FFFFFF","POR"],["Braga","SCB","#E20613","#FFFFFF","POR"],
+["PSV","PSV","#ED1C24","#FFFFFF","HOL"],["Ajax","AJA","#FFFFFF","#D2122E","HOL"],["Feyenoord","FEY","#E30613","#111111","HOL"],
+["Fenerbahçe","FEN","#FFED00","#163962","TUR"],["Beşiktaş","BJK","#111111","#FFFFFF","TUR"],["Celtic","CLT","#018749","#FFFFFF","ESC"],["Paris FC","PFC","#0A2240","#FFFFFF","FRA"]];
+
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const LIGHT=["#FFFFFF","#FFE667","#FFED00","#FDB913","#8AC3EE"];
+function crest([name,abbr,c1,c2]){
+  const light=LIGHT.includes(c1), txt=light?(c2==="#FFFFFF"?"#111111":c2):"#FFFFFF";
+  return `<svg class="crest" viewBox="0 0 38 44" aria-hidden="true"><defs><clipPath id="c-${abbr}"><path d="M2 2h34v20c0 11-8 17-17 20C10 39 2 33 2 22z"/></clipPath></defs><g clip-path="url(#c-${abbr})"><rect width="38" height="44" fill="${c1}"/><path d="M38 9L38 44L10 44Z" fill="${c2}" opacity=".9"/></g><path d="M2 2h34v20c0 11-8 17-17 20C10 39 2 33 2 22z" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/><text x="19" y="24" text-anchor="middle" font-size="${abbr.length>2?13:15}" fill="${txt}">${abbr}</text></svg>`;
+}
+const item=t=>`<span class="club">${crest(t)}${esc(t[0])} <em>${t[4]}</em></span>`;
+const half=Math.ceil(TEAMS.length/2), rows=[TEAMS.slice(0,half),TEAMS.slice(half)];
+document.getElementById("lanes").innerHTML=rows.map((r,i)=>{const items=r.map(item).join("");
+  return `<div class="lane${i?" b":""}">${items}<span class="dup" style="display:contents" aria-hidden="true">${items}</span></div>`;}).join("");
+document.getElementById("clubs-n").textContent=`${TEAMS.length} clubes 4 estrelas · o time de cada um sai no sorteio`;
+
+/* Inscrições: salvas no banco pela API /api/inscricao. */
+let WA="";
+const showCount=n=>{document.getElementById("count").textContent=String(n).padStart(2,"0");};
+fetch("/api/inscricao").then(r=>r.ok?r.json():null).then(d=>{if(d){showCount(d.total);WA=d.whatsapp||"";}}).catch(()=>{});
+
+const form=document.getElementById("reg"), btn=form.querySelector("button");
+function setErr(id,msg){const i=document.getElementById("f-"+id);document.getElementById("e-"+id).textContent=msg;i.setAttribute("aria-invalid",msg?"true":"false");return !msg;}
+form.addEventListener("submit",async e=>{
+  e.preventDefault();
+  const name=form.name.value.trim(), tag=form.tag.value.trim(), phone=form.phone.value.trim(), digits=phone.replace(/\D/g,"");
+  const ok=[setErr("name",name?"":"Coloca seu nome."),
+            setErr("tag",tag?"":"Coloca seu ID no jogo."),
+            setErr("phone",digits.length>=10&&digits.length<=13?"":"Coloca um WhatsApp com DDD.")];
+  if(ok.includes(false)){form.querySelector('[aria-invalid="true"]').focus();return;}
+  btn.disabled=true; const label=btn.firstChild.textContent; btn.firstChild.textContent="Enviando… ";
+  let res,data={};
+  try{res=await fetch("/api/inscricao",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({nome:name,id_jogo:tag,whatsapp:phone})});data=await res.json().catch(()=>({}));}
+  catch(err){res=null;}
+  btn.disabled=false; btn.firstChild.textContent=label;
+  if(!res||!res.ok){
+    if(res&&res.status===409){setErr("phone","Esse WhatsApp já está inscrito.");document.getElementById("f-phone").focus();}
+    else setErr("phone",data.erro||"Não deu pra enviar agora. Confere a internet e tenta de novo.");
+    return;
+  }
+  if(typeof data.total==="number") showCount(data.total);
+  WA=data.whatsapp||WA;
+  form.hidden=true; const d=document.getElementById("done"); d.hidden=false;
+  document.getElementById("done-title").innerHTML=`${esc(name.split(" ")[0])}, <span>tá dentro!</span>`;
+  const wa=document.getElementById("wa"), note=document.getElementById("wa-note");
+  if(WA){wa.href=WA; note.textContent="Abrindo o grupo…"; setTimeout(()=>{window.location.href=WA},1800);}
+  else{wa.removeAttribute("href"); wa.setAttribute("aria-disabled","true"); note.textContent="O link do grupo sai em breve. A organização vai te chamar no WhatsApp.";}
+});
+})();
+</script>
+</body>
+</html>

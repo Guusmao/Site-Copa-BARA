@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/logo.webp" type="image/webp">
+<title>Organização · Copa BARA</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap">
+<style>
+:root{--paper:#F4F4F1;--ink:#0B0D12;--navy:#0A2387;--gold:#FFB000;--red:#E3122D;--grey:#5B5F69;--line:#D6D7DB;--err:#C40E27;
+  --poster:"Anton","Impact",sans-serif;--cond:"Barlow Condensed","Arial Narrow",sans-serif;--body:"Barlow",system-ui,sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+header{background:var(--navy);color:#fff;border-bottom:8px solid var(--gold)}
+header .wrap{display:flex;align-items:center;gap:14px;padding-block:16px}
+header img{width:44px}
+h1{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:2rem;line-height:1;margin:0}
+h1 small{display:block;font-family:var(--cond);font-weight:700;font-size:.8rem;letter-spacing:.14em;color:var(--gold)}
+main{padding-block:28px 48px;display:grid;gap:20px}
+form{display:flex;flex-wrap:wrap;gap:10px;align-items:end;max-width:460px}
+label{font-family:var(--cond);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:.82rem;display:block;margin-bottom:4px}
+input{font:inherit;border:0;border-bottom:3px solid var(--ink);background:transparent;padding:8px 0;font-size:1.1rem;width:100%}
+input:focus{outline:none;border-bottom-color:var(--navy)}
+.f{flex:1 1 220px}
+button{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:1.15rem;letter-spacing:.03em;background:var(--ink);color:#fff;border:0;padding:12px 18px;cursor:pointer}
+button:hover{background:var(--navy)}
+button.alt{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 3px var(--ink)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.err{color:var(--err);font-weight:700}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.total{font-family:var(--poster);font-size:3rem;line-height:1}
+.total small{font-family:var(--cond);font-weight:700;font-size:.9rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);margin-left:8px}
+.scroll{overflow-x:auto;border:3px solid var(--ink);background:#fff}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{font-family:var(--cond);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:.78rem;text-align:left;padding:10px 12px;border-bottom:3px solid var(--ink);background:var(--gold);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td a{color:var(--navy);font-weight:600}
+.muted{color:var(--grey)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><div class="wrap"><img src="/logo.webp" alt=""><h1><small>Copa BARA</small>Inscritos</h1></div></header>
+<main class="wrap">
+  <form id="login">
+    <div class="f"><label for="senha">Senha da organização</label><input id="senha" type="password" autocomplete="current-password"></div>
+    <button type="submit">Entrar</button>
+    <p class="err" id="err" style="flex-basis:100%;margin:0"></p>
+  </form>
+  <section id="lista" hidden>
+    <div class="bar">
+      <div class="total" id="total">0<small>inscritos</small></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" id="copy" class="alt">Copiar lista</button><button type="button" id="reload">Atualizar</button></div>
+    </div>
+    <p class="muted" id="copied" role="status"></p>
+    <div class="scroll"><table><thead><tr><th>#</th><th>Nome</th><th>ID no jogo</th><th>WhatsApp</th><th>Inscrito em</th></tr></thead><tbody id="rows"></tbody></table></div>
+  </section>
+</main>
+<script>
+(function(){
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmtPhone=d=>{d=String(d);const n=d.length>11?d.slice(-11):d;return n.length===11?`(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`:n.length===10?`(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`:d;};
+const waLink=d=>`https://wa.me/${String(d).length<=11?"55"+d:d}`;
+const fmtDate=s=>new Date(s).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+let senha="", data=[];
+try{senha=sessionStorage.getItem("cb-senha")||"";}catch(e){}
+async function load(){
+  const r=await fetch("/api/inscritos",{headers:{"x-senha":senha}});
+  if(r.status===401){document.getElementById("err").textContent="Senha errada.";document.getElementById("lista").hidden=true;document.getElementById("login").hidden=false;return;}
+  if(!r.ok){document.getElementById("err").textContent="Não deu pra carregar. Tenta de novo.";return;}
+  try{sessionStorage.setItem("cb-senha",senha);}catch(e){}
+  data=(await r.json()).inscritos;
+  document.getElementById("login").hidden=true; document.getElementById("lista").hidden=false;
+  document.getElementById("total").innerHTML=`${data.length}<small>${data.length===1?"inscrito":"inscritos"}</small>`;
+  document.getElementById("rows").innerHTML=data.length?data.map((p,i)=>`<tr><td>${i+1}</td><td><b>${esc(p.nome)}</b></td><td>${esc(p.id_jogo)}</td><td><a href="${waLink(p.whatsapp)}" target="_blank" rel="noopener">${fmtPhone(p.whatsapp)}</a></td><td class="muted">${fmtDate(p.criado_em)}</td></tr>`).join(""):`<tr><td colspan="5" class="muted">Ninguém inscrito ainda.</td></tr>`;
+}
+document.getElementById("login").addEventListener("submit",e=>{e.preventDefault();senha=document.getElementById("senha").value;document.getElementById("err").textContent="";load();});
+document.getElementById("reload").addEventListener("click",load);
+document.getElementById("copy").addEventListener("click",async()=>{
+  const txt=data.map((p,i)=>`${i+1}. ${p.nome} · ${p.id_jogo} · ${fmtPhone(p.whatsapp)}`).join("\n");
+  try{await navigator.clipboard.writeText(txt);document.getElementById("copied").textContent="Lista copiada. É só colar no grupo.";}
+  catch(e){document.getElementById("copied").textContent="Não deu pra copiar automaticamente.";}
+});
+if(senha) load();
+})();
+</script>
+</body>
+</html>
