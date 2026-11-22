@@ -151,7 +151,6 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;p
     </div>
     <form id="reg" novalidate>
       <div class="field"><label for="f-name">Nome</label><input id="f-name" name="name" maxlength="40" autocomplete="name" placeholder="Como a galera te chama"><span class="err" id="e-name"></span></div>
-      <div class="field"><label for="f-tag">ID no jogo</label><input id="f-tag" name="tag" maxlength="30" placeholder="PSN, Xbox ou EA ID"><span class="err" id="e-tag"></span></div>
       <div class="field"><label for="f-phone">WhatsApp</label><input id="f-phone" name="phone" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(11) 90000-0000"><span class="hint">Só a organização vê.</span><span class="err" id="e-phone"></span></div>
       <button class="go" type="submit">Confirmar inscrição <svg width="28" height="20" viewBox="0 0 28 20" aria-hidden="true"><path d="M0 10h24M16 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3.5"/></svg></button>
     </form>
@@ -199,14 +198,13 @@ const form=document.getElementById("reg"), btn=form.querySelector("button");
 function setErr(id,msg){const i=document.getElementById("f-"+id);document.getElementById("e-"+id).textContent=msg;i.setAttribute("aria-invalid",msg?"true":"false");return !msg;}
 form.addEventListener("submit",async e=>{
   e.preventDefault();
-  const name=form.name.value.trim(), tag=form.tag.value.trim(), phone=form.phone.value.trim(), digits=phone.replace(/\D/g,"");
+  const name=form.name.value.trim(), phone=form.phone.value.trim(), digits=phone.replace(/\D/g,"");
   const ok=[setErr("name",name?"":"Coloca seu nome."),
-            setErr("tag",tag?"":"Coloca seu ID no jogo."),
             setErr("phone",digits.length>=10&&digits.length<=13?"":"Coloca um WhatsApp com DDD.")];
   if(ok.includes(false)){form.querySelector('[aria-invalid="true"]').focus();return;}
   btn.disabled=true; const label=btn.firstChild.textContent; btn.firstChild.textContent="Enviando… ";
   let res,data={};
-  try{res=await fetch("/api/inscricao",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({nome:name,id_jogo:tag,whatsapp:phone})});data=await res.json().catch(()=>({}));}
+  try{res=await fetch("/api/inscricao",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({nome:name,whatsapp:phone})});data=await res.json().catch(()=>({}));}
   catch(err){res=null;}
   btn.disabled=false; btn.firstChild.textContent=label;
   if(!res||!res.ok){

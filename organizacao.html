@@ -56,7 +56,7 @@ td a{color:var(--navy);font-weight:600}
       <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" id="copy" class="alt">Copiar lista</button><button type="button" id="reload">Atualizar</button></div>
     </div>
     <p class="muted" id="copied" role="status"></p>
-    <div class="scroll"><table><thead><tr><th>#</th><th>Nome</th><th>ID no jogo</th><th>WhatsApp</th><th>Inscrito em</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div class="scroll"><table><thead><tr><th>#</th><th>Nome</th><th>WhatsApp</th><th>Inscrito em</th></tr></thead><tbody id="rows"></tbody></table></div>
   </section>
 </main>
 <script>
@@ -75,12 +75,12 @@ async function load(){
   data=(await r.json()).inscritos;
   document.getElementById("login").hidden=true; document.getElementById("lista").hidden=false;
   document.getElementById("total").innerHTML=`${data.length}<small>${data.length===1?"inscrito":"inscritos"}</small>`;
-  document.getElementById("rows").innerHTML=data.length?data.map((p,i)=>`<tr><td>${i+1}</td><td><b>${esc(p.nome)}</b></td><td>${esc(p.id_jogo)}</td><td><a href="${waLink(p.whatsapp)}" target="_blank" rel="noopener">${fmtPhone(p.whatsapp)}</a></td><td class="muted">${fmtDate(p.criado_em)}</td></tr>`).join(""):`<tr><td colspan="5" class="muted">Ninguém inscrito ainda.</td></tr>`;
+  document.getElementById("rows").innerHTML=data.length?data.map((p,i)=>`<tr><td>${i+1}</td><td><b>${esc(p.nome)}</b></td><td><a href="${waLink(p.whatsapp)}" target="_blank" rel="noopener">${fmtPhone(p.whatsapp)}</a></td><td class="muted">${fmtDate(p.criado_em)}</td></tr>`).join(""):`<tr><td colspan="4" class="muted">Ninguém inscrito ainda.</td></tr>`;
 }
 document.getElementById("login").addEventListener("submit",e=>{e.preventDefault();senha=document.getElementById("senha").value;document.getElementById("err").textContent="";load();});
 document.getElementById("reload").addEventListener("click",load);
 document.getElementById("copy").addEventListener("click",async()=>{
-  const txt=data.map((p,i)=>`${i+1}. ${p.nome} · ${p.id_jogo} · ${fmtPhone(p.whatsapp)}`).join("\n");
+  const txt=data.map((p,i)=>`${i+1}. ${p.nome} · ${fmtPhone(p.whatsapp)}`).join("\n");
   try{await navigator.clipboard.writeText(txt);document.getElementById("copied").textContent="Lista copiada. É só colar no grupo.";}
   catch(e){document.getElementById("copied").textContent="Não deu pra copiar automaticamente.";}
 });
