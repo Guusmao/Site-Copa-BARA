@@ -1,6 +1,17 @@
 {
   "cleanUrls": true,
   "headers": [
-    { "source": "/organizacao", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] }
+    {
+      "source": "/organizacao",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    }
+  ],
+  "regions": [
+    "gru1"
   ]
 }
