@@ -97,6 +97,9 @@ main{padding-block:48px 40px}
 .stub h2{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2.4rem,6vw,3.4rem);line-height:.9;margin:0}
 .stub p{margin:0;font-weight:500;max-width:30ch}
 .stub .no{margin-top:auto;font-family:var(--cond);font-weight:800;text-transform:uppercase;letter-spacing:.14em;font-size:.8rem;display:flex;justify-content:space-between;border-top:2px solid var(--ink);padding-top:10px}
+.stub .no b small{font-size:.9rem;margin-left:2px;opacity:.7}
+.stub .rules{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;color:var(--ink);font-family:var(--cond);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:.86rem;text-decoration:none;border-bottom:2px solid var(--ink);padding-bottom:2px}
+.stub .rules:hover{color:var(--navy);border-color:var(--navy)}
 .stub .no b{font-family:var(--poster);font-weight:400;font-size:1.6rem;letter-spacing:.02em;line-height:1;font-variant-numeric:tabular-nums}
 form,.done{padding:26px 26px 28px;display:grid;gap:20px;align-content:start}
 .field{display:grid;gap:4px}
@@ -140,6 +143,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;p
     <img class="shield" src="logo.webp" alt="Escudo da Copa BARA">
     <div class="billing">
       <div><small>Edição</small><b>1ª Copa Bara de FIFA</b></div>
+      <div><small>Vagas</small><b>12 jogadores</b><span>3 grupos de 4, depois mata-mata.</span></div>
       <div><small>Data</small><b>A definir</b><span>Será definida quando todas as inscrições forem preenchidas.</span></div>
     </div>
   </div>
@@ -157,11 +161,13 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;p
     <div class="stub">
       <h2>Ficha de inscrição</h2>
       <p>Preenche aí pra gente saber quem vai jogar. Depois é só entrar no grupo da Copa no WhatsApp.</p>
-      <div class="no"><span>Inscritos</span><b id="count">0</b></div>
+      <a class="rules" href="/regulamento">Ler o regulamento <svg width="22" height="14" viewBox="0 0 28 20" aria-hidden="true"><path d="M0 10h24M16 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3.5"/></svg></a>
+      <div class="no"><span>Inscritos</span><b><span id="count">0</span><small>/12</small></b></div>
     </div>
     <form id="reg" novalidate>
       <div class="field"><label for="f-name">Nome</label><input id="f-name" name="name" maxlength="40" autocomplete="name" placeholder="Como a galera te chama"><span class="err" id="e-name"></span></div>
       <div class="field"><label for="f-phone">WhatsApp</label><input id="f-phone" name="phone" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(11) 90000-0000"><span class="hint">Só a organização vê.</span><span class="err" id="e-phone"></span></div>
+      <p class="hint" style="margin:0">Ao se inscrever você concorda com o <a href="/regulamento" style="color:inherit;font-weight:700">regulamento</a>.</p>
       <button class="go" type="submit">Confirmar inscrição <svg width="28" height="20" viewBox="0 0 28 20" aria-hidden="true"><path d="M0 10h24M16 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3.5"/></svg></button>
     </form>
     <div class="done" id="done" hidden>
@@ -172,7 +178,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;p
     </div>
   </div>
 </main>
-<footer><div class="wrap"><span>1ª Copa Bara de FIFA</span><span>Inscrições abertas</span></div></footer>
+<footer><div class="wrap"><span>1ª Copa Bara de FIFA</span><a href="/regulamento" style="color:inherit">Regulamento</a></div></footer>
 
 <script>
 (function(){
