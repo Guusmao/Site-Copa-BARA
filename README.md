@@ -26,3 +26,10 @@ CREATE TABLE inscricoes (
   criado_em timestamptz NOT NULL DEFAULT now()
 );
 ```
+
+## Escudos
+
+Os escudos em `escudos/` foram convertidos para WebP a partir dos SVGs do repositório
+[JoseArroyave/football-logos](https://github.com/JoseArroyave/football-logos). São marcas dos
+respectivos clubes e estão aqui só para identificar os times neste campeonato entre amigos.
+Se um escudo não carregar, o site mostra um escudo genérico com a sigla e as cores do clube.

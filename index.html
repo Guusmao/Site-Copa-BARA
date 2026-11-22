@@ -85,6 +85,7 @@ button,input{font:inherit;color:inherit}
 @keyframes run{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .club{display:inline-flex;align-items:center;gap:10px;padding:0 22px;white-space:nowrap;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:1.15rem;border-right:1px solid #2C3039}
 .club .crest{width:24px;height:28px;flex:none}
+.club img.crest{width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 0 1px rgba(255,255,255,.35))}
 .club .crest text{font-family:var(--cond);font-weight:800}
 .club em{font-style:normal;color:#8D93A0;font-weight:600;font-size:.9rem}
 
@@ -192,13 +193,18 @@ function crest([name,abbr,c1,c2]){
   const light=LIGHT.includes(c1), txt=light?(c2==="#FFFFFF"?"#111111":c2):"#FFFFFF";
   return `<svg class="crest" viewBox="0 0 38 44" aria-hidden="true"><defs><clipPath id="c-${abbr}"><path d="M2 2h34v20c0 11-8 17-17 20C10 39 2 33 2 22z"/></clipPath></defs><g clip-path="url(#c-${abbr})"><rect width="38" height="44" fill="${c1}"/><path d="M38 9L38 44L10 44Z" fill="${c2}" opacity=".9"/></g><path d="M2 2h34v20c0 11-8 17-17 20C10 39 2 33 2 22z" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/><text x="19" y="24" text-anchor="middle" font-size="${abbr.length>2?13:15}" fill="${txt}">${abbr}</text></svg>`;
 }
-const item=t=>`<span class="club" data-abbr="${t[1]}">${crest(t)}${esc(t[0])} <em>${t[4]}</em></span>`;
+const logo=t=>`<img class="crest" src="/escudos/${t[1]}.webp" alt="" width="28" height="28" loading="eager" decoding="async" draggable="false" data-abbr="${t[1]}">`;
+const item=t=>`<span class="club" data-abbr="${t[1]}">${logo(t)}${esc(t[0])} <em>${t[4]}</em></span>`;
 /* Mais conhecidos primeiro; os demais seguem a ordem da lista. Alternados entre as duas faixas. */
 const FAME=["SLB","FCP","AJA","OM","PSV","SEV","VAL","ASM","OL","FEN","CLT","FEY","WHU","BET","VIL","EVE","FIO","BJK","LEE","RSO","SGE","BMG","VFB","WOB","SVW","LIL","SCB","BHA","CRY","WOL"];
 const ranked=[...TEAMS].sort((x,y)=>{const a=FAME.indexOf(x[1]),b=FAME.indexOf(y[1]);return (a<0?999:a)-(b<0?999:b);});
 const rows=[ranked.filter((_,i)=>i%2===0),ranked.filter((_,i)=>i%2===1)];
 document.getElementById("lanes").innerHTML=rows.map((r,i)=>{const items=r.map(item).join("");
   return `<div class="lane-box"><div class="lane">${items}${items}</div></div>`;}).join("");
+document.getElementById("lanes").addEventListener("error",e=>{
+  const img=e.target; if(img.tagName!=="IMG") return;
+  const t=TEAMS.find(x=>x[1]===img.dataset.abbr); if(t) img.outerHTML=crest(t);
+},true);
 const clubsN=document.getElementById("clubs-n");
 const DEFAULT_N=`${TEAMS.length} clubes 4 estrelas · o time de cada um sai no sorteio`;
 clubsN.textContent=DEFAULT_N;
