@@ -71,15 +71,23 @@ button,input{font:inherit;color:inherit}
 .ticker{background:var(--ink);color:#fff;overflow:hidden;border-bottom:3px solid var(--ink)}
 .ticker-head{display:flex;align-items:center;gap:10px;font-family:var(--cond);font-weight:800;text-transform:uppercase;letter-spacing:.14em;font-size:.78rem;color:var(--gold);padding-block:10px 0}
 .ticker-head span{color:#9EA3AE;font-weight:600;letter-spacing:.08em}
-.lane{display:flex;width:max-content;animation:run 90s linear infinite;padding-block:10px}
-.lane.b{animation-duration:110s;animation-direction:reverse;border-top:1px solid #23262E}
-.ticker:hover .lane{animation-play-state:paused}
+.lane-box{overflow:hidden;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.lane-box.drag{cursor:grabbing}
+.lane-box + .lane-box{border-top:1px solid #23262E}
+.lane{display:flex;width:max-content;padding-block:10px;will-change:transform}
+.club{cursor:pointer;transition:background .15s,color .15s}
+.club:hover{background:#171A21}
+.club.on{background:var(--gold);color:var(--ink)}
+.club.on em{color:var(--ink)}
+.club img,.club svg{pointer-events:none}
+.ticker-head .pick{color:#fff;font-weight:700}
+.ticker-hint{font-family:var(--cond);font-weight:600;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:#6E7480;padding-block:0 10px}
 @keyframes run{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .club{display:inline-flex;align-items:center;gap:10px;padding:0 22px;white-space:nowrap;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:1.15rem;border-right:1px solid #2C3039}
 .club .crest{width:24px;height:28px;flex:none}
 .club .crest text{font-family:var(--cond);font-weight:800}
 .club em{font-style:normal;color:#8D93A0;font-weight:600;font-size:.9rem}
-@media (prefers-reduced-motion:reduce){.lane{animation:none;flex-wrap:wrap;width:auto;row-gap:10px}.lane .dup{display:none}}
+
 
 /* entry ticket */
 main{padding-block:48px 40px}
@@ -140,6 +148,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;p
 <section class="ticker" aria-labelledby="clubs-h">
   <div class="wrap ticker-head"><span id="clubs-h" style="color:inherit;font-weight:800;letter-spacing:.14em">Clubes da Copa</span><span id="clubs-n"></span></div>
   <div id="lanes"></div>
+  <div class="wrap ticker-hint">Arrasta pro lado e toca num clube</div>
 </section>
 
 <main class="wrap" id="inscricao">
@@ -183,11 +192,70 @@ function crest([name,abbr,c1,c2]){
   const light=LIGHT.includes(c1), txt=light?(c2==="#FFFFFF"?"#111111":c2):"#FFFFFF";
   return `<svg class="crest" viewBox="0 0 38 44" aria-hidden="true"><defs><clipPath id="c-${abbr}"><path d="M2 2h34v20c0 11-8 17-17 20C10 39 2 33 2 22z"/></clipPath></defs><g clip-path="url(#c-${abbr})"><rect width="38" height="44" fill="${c1}"/><path d="M38 9L38 44L10 44Z" fill="${c2}" opacity=".9"/></g><path d="M2 2h34v20c0 11-8 17-17 20C10 39 2 33 2 22z" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/><text x="19" y="24" text-anchor="middle" font-size="${abbr.length>2?13:15}" fill="${txt}">${abbr}</text></svg>`;
 }
-const item=t=>`<span class="club">${crest(t)}${esc(t[0])} <em>${t[4]}</em></span>`;
-const half=Math.ceil(TEAMS.length/2), rows=[TEAMS.slice(0,half),TEAMS.slice(half)];
+const item=t=>`<span class="club" data-abbr="${t[1]}">${crest(t)}${esc(t[0])} <em>${t[4]}</em></span>`;
+/* Mais conhecidos primeiro; os demais seguem a ordem da lista. Alternados entre as duas faixas. */
+const FAME=["SLB","FCP","AJA","OM","PSV","SEV","VAL","ASM","OL","FEN","CLT","FEY","WHU","BET","VIL","EVE","FIO","BJK","LEE","RSO","SGE","BMG","VFB","WOB","SVW","LIL","SCB","BHA","CRY","WOL"];
+const ranked=[...TEAMS].sort((x,y)=>{const a=FAME.indexOf(x[1]),b=FAME.indexOf(y[1]);return (a<0?999:a)-(b<0?999:b);});
+const rows=[ranked.filter((_,i)=>i%2===0),ranked.filter((_,i)=>i%2===1)];
 document.getElementById("lanes").innerHTML=rows.map((r,i)=>{const items=r.map(item).join("");
-  return `<div class="lane${i?" b":""}">${items}<span class="dup" style="display:contents" aria-hidden="true">${items}</span></div>`;}).join("");
-document.getElementById("clubs-n").textContent=`${TEAMS.length} clubes 4 estrelas · o time de cada um sai no sorteio`;
+  return `<div class="lane-box"><div class="lane">${items}${items}</div></div>`;}).join("");
+const clubsN=document.getElementById("clubs-n");
+const DEFAULT_N=`${TEAMS.length} clubes 4 estrelas · o time de cada um sai no sorteio`;
+clubsN.textContent=DEFAULT_N;
+const COUNTRY={ING:"Inglaterra",ESP:"Espanha",ITA:"Itália",ALE:"Alemanha",FRA:"França",POR:"Portugal",HOL:"Holanda",TUR:"Turquia",ESC:"Escócia"};
+
+/* Faixas de clubes: andam sozinhas, dá pra arrastar (com embalo) e tocar num clube. */
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const lanes=[...document.querySelectorAll(".lane-box")].map((box,i)=>({box,el:box.firstElementChild,x:0,v:0,auto:i?0.35:-0.45,hold:false,idleUntil:0,half:0}));
+const measure=()=>lanes.forEach(L=>{L.half=L.el.scrollWidth/2; if(L.auto>0&&!L.touched) L.x=-L.half;});
+measure(); addEventListener("resize",measure); document.fonts&&document.fonts.ready.then(measure);
+function wrap(L){ if(!L.half) return; while(L.x<=-L.half) L.x+=L.half; while(L.x>0) L.x-=L.half; }
+let last=performance.now();
+function tick(now){
+  const dt=Math.min(50,now-last)/16.67; last=now;
+  lanes.forEach(L=>{
+    if(!L.hold){
+      if(Math.abs(L.v)>0.05){ L.x+=L.v*dt; L.v*=Math.pow(0.94,dt); }
+      else if(!reduce && now>L.idleUntil){ L.x+=L.auto*dt; }
+    }
+    wrap(L); L.el.style.transform=`translate3d(${L.x}px,0,0)`;
+  });
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+lanes.forEach(L=>{
+  let startX=0,lastX=0,lastT=0,moved=0,id=null;
+  L.box.addEventListener("pointerdown",e=>{
+    id=e.pointerId; L.hold=true; L.touched=true; L.v=0; startX=lastX=e.clientX; lastT=performance.now(); moved=0;
+  });
+  L.box.addEventListener("pointermove",e=>{
+    if(e.pointerId!==id) return;
+    const dx=e.clientX-lastX, t=performance.now();
+    moved=Math.max(moved,Math.abs(e.clientX-startX));
+    if(moved>6&&!L.box.classList.contains("drag")){ L.box.classList.add("drag"); try{L.box.setPointerCapture(id)}catch(_){} }
+    L.x+=dx; L.v=dx/Math.max(1,(t-lastT)/16.67); lastX=e.clientX; lastT=t;
+  });
+  const end=e=>{
+    if(e.pointerId!==id) return; id=null; L.hold=false; L.box.classList.remove("drag");
+    if(performance.now()-lastT>80) L.v=0;
+    L.idleUntil=performance.now()+2500;
+    if(moved<=6&&e.type==="pointerup"){
+      const c=e.target.closest(".club"); if(c) pick(c.dataset.abbr);
+    }
+  };
+  L.box.addEventListener("pointerup",end); L.box.addEventListener("pointercancel",end);
+  L.box.addEventListener("mouseenter",()=>{L.hold=true;});
+  L.box.addEventListener("mouseleave",()=>{L.hold=false;L.idleUntil=performance.now()+800;});
+});
+let picked=null;
+function pick(abbr){
+  picked=picked===abbr?null:abbr;
+  document.querySelectorAll(".club").forEach(c=>c.classList.toggle("on",c.dataset.abbr===picked));
+  const t=TEAMS.find(x=>x[1]===picked);
+  clubsN.innerHTML=t?`<span class="pick">${esc(t[0])}</span> · ${COUNTRY[t[4]]||""} · 4 estrelas`:DEFAULT_N;
+  if(t&&innerWidth<=620) clubsN.style.display="inline";
+  else clubsN.style.display="";
+}
 
 /* Inscrições: salvas no banco pela API /api/inscricao. */
 let WA="";
