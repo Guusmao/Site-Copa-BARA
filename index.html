@@ -165,7 +165,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;p
       <div class="no"><span>Inscritos</span><b><span id="count">0</span><small>/12</small></b></div>
     </div>
     <form id="reg" novalidate>
-      <div class="field"><label for="f-name">Nome</label><input id="f-name" name="name" maxlength="40" autocomplete="name" placeholder="Como a galera te chama"><span class="err" id="e-name"></span></div>
+      <div class="field"><label for="f-name">Nome e sobrenome</label><input id="f-name" name="name" maxlength="60" autocomplete="name" placeholder="Ex.: João Silva"><span class="err" id="e-name"></span></div>
       <div class="field"><label for="f-phone">WhatsApp</label><input id="f-phone" name="phone" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(11) 90000-0000"><span class="hint">Só a organização vê.</span><span class="err" id="e-phone"></span></div>
       <p class="hint" style="margin:0">Ao se inscrever você concorda com o <a href="/regulamento" style="color:inherit;font-weight:700">regulamento</a>.</p>
       <button class="go" type="submit">Confirmar inscrição <svg width="28" height="20" viewBox="0 0 28 20" aria-hidden="true"><path d="M0 10h24M16 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3.5"/></svg></button>
@@ -178,7 +178,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;p
     </div>
   </div>
 </main>
-<footer><div class="wrap"><span>1ª Copa Bara de FIFA</span><a href="/regulamento" style="color:inherit">Regulamento</a></div></footer>
+<footer><div class="wrap"><span>1ª Copa Bara de FIFA · Este torneio não é organizado pela Igreja Cristã Bara. O nome é apenas simbólico.</span><a href="/regulamento" style="color:inherit">Regulamento</a></div></footer>
 
 <script>
 (function(){
@@ -279,7 +279,7 @@ function setErr(id,msg){const i=document.getElementById("f-"+id);document.getEle
 form.addEventListener("submit",async e=>{
   e.preventDefault();
   const name=form.name.value.trim(), phone=form.phone.value.trim(), digits=phone.replace(/\D/g,"");
-  const ok=[setErr("name",name?"":"Coloca seu nome."),
+  const ok=[setErr("name",!name?"Coloca seu nome e sobrenome.":name.split(/\s+/).filter(w=>w.length>1).length<2?"Coloca o sobrenome também.":""),
             setErr("phone",digits.length>=10&&digits.length<=13?"":"Coloca um WhatsApp com DDD.")];
   if(ok.includes(false)){form.querySelector('[aria-invalid="true"]').focus();return;}
   btn.disabled=true; const label=btn.firstChild.textContent; btn.firstChild.textContent="Enviando… ";

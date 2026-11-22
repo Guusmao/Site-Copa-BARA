@@ -17,10 +17,11 @@ export default async function handler(req, res) {
   }
 
   const body = readBody(req);
-  const nome = clean(body.nome, 40);
+  const nome = clean(body.nome, 60);
   const digits = String(body.whatsapp ?? "").replace(/\D/g, "");
 
-  if (!nome) return res.status(400).json({ erro: "Coloca seu nome." });
+  if (!nome) return res.status(400).json({ erro: "Coloca seu nome e sobrenome." });
+  if (nome.split(" ").filter((w) => w.length > 1).length < 2) return res.status(400).json({ erro: "Coloca o sobrenome também." });
   if (digits.length < 10 || digits.length > 13) return res.status(400).json({ erro: "Coloca um WhatsApp com DDD." });
 
   const rows = await sql`
