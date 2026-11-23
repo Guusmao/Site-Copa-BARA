@@ -8,83 +8,336 @@
 <title>Organização · Jesus Cup</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap">
 <style>
-:root{--paper:#F4F4F1;--ink:#0B0D12;--navy:#0A2387;--gold:#FFB000;--red:#E3122D;--grey:#5B5F69;--line:#D6D7DB;--err:#C40E27;
+:root{--paper:#F4F4F1;--ink:#000000;--navy:#0A2387;--gold:#FFB000;--red:#E3122D;--grey:#5B5F69;--line:#D6D7DB;--err:#C40E27;--ok:#0F7A4F;
   --poster:"Anton","Impact",sans-serif;--cond:"Barlow Condensed","Arial Narrow",sans-serif;--body:"Barlow",system-ui,sans-serif;color-scheme:light}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
 .wrap{max-width:1000px;margin:0 auto;padding:0 16px}
 header{background:var(--navy);color:#fff;border-bottom:8px solid var(--gold)}
 header .wrap{display:flex;align-items:center;gap:14px;padding-block:16px}
 header img{width:44px}
 h1{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:2rem;line-height:1;margin:0}
-h1 small{display:block;font-family:var(--cond);font-weight:700;font-size:.8rem;letter-spacing:.14em;color:var(--gold)}
-main{padding-block:28px 48px;display:grid;gap:20px}
-form{display:flex;flex-wrap:wrap;gap:10px;align-items:end;max-width:460px}
-label{font-family:var(--cond);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:.82rem;display:block;margin-bottom:4px}
-input{font:inherit;border:0;border-bottom:3px solid var(--ink);background:transparent;padding:8px 0;font-size:1.1rem;width:100%}
+h1 small{display:block;font-family:var(--cond);font-weight:700;font-size:1rem;color:var(--gold);text-transform:none}
+main{padding-block:24px 60px;display:grid;gap:20px}
+form#login{display:flex;flex-wrap:wrap;gap:10px;align-items:end;max-width:460px}
+label.t{font-family:var(--cond);font-weight:700;font-size:1.05rem;display:block;margin-bottom:4px}
+input[type=password],input[type=text]{font:inherit;border:0;border-bottom:3px solid var(--ink);background:transparent;padding:8px 0;font-size:1.1rem;width:100%}
 input:focus{outline:none;border-bottom-color:var(--navy)}
+select{font:inherit;font-size:1rem;padding:6px 8px;border:2px solid var(--ink);background:#fff;max-width:100%}
 .f{flex:1 1 220px}
-button{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:1.15rem;letter-spacing:.03em;background:var(--ink);color:#fff;border:0;padding:12px 18px;cursor:pointer}
+button{font-family:var(--poster);font-weight:400;font-size:1.1rem;letter-spacing:.01em;background:var(--ink);color:#fff;border:0;padding:11px 16px;cursor:pointer}
 button:hover{background:var(--navy)}
+button:disabled{opacity:.45;cursor:not-allowed}
 button.alt{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 3px var(--ink)}
+button.alt:hover{background:#fff}
+button.danger{background:transparent;color:var(--err);box-shadow:inset 0 0 0 3px var(--err)}
+button.mini{font-family:var(--cond);font-weight:700;font-size:.95rem;padding:3px 9px;background:#fff;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
 :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .err{color:var(--err);font-weight:700}
+.muted{color:var(--grey)}
 .bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .total{font-family:var(--poster);font-size:3rem;line-height:1}
-.total small{font-family:var(--cond);font-weight:700;font-size:.9rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);margin-left:8px}
+.total small{font-family:var(--cond);font-weight:700;font-size:1.05rem;color:var(--grey);margin-left:8px}
 .scroll{overflow-x:auto;border:3px solid var(--ink);background:#fff}
 table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-th{font-family:var(--cond);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:.78rem;text-align:left;padding:10px 12px;border-bottom:3px solid var(--ink);background:var(--gold);white-space:nowrap}
-td{padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-family:var(--cond);font-weight:700;font-size:1rem;text-align:left;padding:9px 12px;border-bottom:3px solid var(--ink);background:var(--gold);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
 tr:last-child td{border-bottom:0}
 td a{color:var(--navy);font-weight:600}
-.muted{color:var(--grey)}
-[hidden]{display:none!important}
+
+.tabs{display:flex;border:3px solid var(--ink);background:#fff;width:max-content;max-width:100%}
+.tabs button{font-family:var(--cond);font-weight:700;font-size:1.12rem;padding:9px 18px;background:transparent;color:var(--ink)}
+.tabs button + button{border-left:3px solid var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:#fff}
+.card{background:#fff;border:3px solid var(--ink);padding:18px}
+.card h2{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:1.7rem;line-height:1;margin:0 0 6px}
+.card h3{font-family:var(--cond);font-weight:800;font-size:1.25rem;margin:18px 0 8px}
+.card p{margin:0 0 12px;max-width:70ch}
+.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:4px 16px;margin:10px 0 14px}
+.checks label{display:flex;gap:8px;align-items:center;padding:4px 0}
+.checks input{width:18px;height:18px}
+.status{font-family:var(--cond);font-weight:700;font-size:1.05rem}
+.status.ok{color:var(--ok)} .status.bad{color:var(--err)}
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.gbox{border:2px solid var(--ink);padding:10px 12px;background:var(--paper)}
+.gbox h4{font-family:var(--cond);font-weight:800;font-size:1.15rem;margin:0 0 6px}
+.pl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:6px;align-items:center;padding:4px 0}
+.pl b{overflow-wrap:anywhere}
+.pl select{width:100%}
+.game{display:grid;grid-template-columns:minmax(0,1fr) 3.4em auto 3.4em minmax(0,1fr);gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.game:last-child{border-bottom:0}
+.game .h{text-align:right}
+.game span{overflow-wrap:anywhere;font-weight:600}
+.game .x{font-family:var(--cond);font-weight:700;color:var(--grey)}
+.game.done span{font-weight:700}
+.lbl{font-family:var(--cond);font-weight:700;color:var(--grey);font-size:.95rem;grid-column:1/-1;margin-bottom:-4px}
+input.sc{font:inherit;font-family:var(--poster);font-size:1.3rem;width:100%;text-align:center;border:2px solid var(--ink);background:#fff;padding:4px 0;-moz-appearance:textfield}
+input.sc::-webkit-outer-spin-button,input.sc::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input.sc:focus{outline:3px solid var(--gold);outline-offset:0}
+.rodadas{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:4px 22px}
+.rank{counter-reset:r;list-style:none;margin:8px 0 14px;padding:0;max-width:560px}
+.rank li{display:grid;grid-template-columns:2em minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--line)}
+.rank li.in{background:#FFF4D6}
+.rank li .n{font-family:var(--cond);font-weight:800}
+.rank li small{color:var(--grey)}
+.tie{border:2px solid var(--ink);padding:10px 12px;margin-bottom:12px;background:var(--paper)}
+.tie h4{font-family:var(--cond);font-weight:800;font-size:1.1rem;margin:0 0 4px}
+.tie .res{font-family:var(--cond);font-weight:700;margin-top:6px}
+.danger-zone{border-color:var(--err)}
+@media (max-width:560px){.game{grid-template-columns:minmax(0,1fr) 2.8em auto 2.8em minmax(0,1fr);font-size:.95rem}}
 </style>
 </head>
 <body>
-<header><div class="wrap"><img src="/logo.webp" alt=""><h1><small>Copa BARA</small>Inscritos</h1></div></header>
+<header><div class="wrap"><img src="/logo.webp" alt=""><h1><small>Área da organização</small>Organização</h1></div></header>
 <main class="wrap">
   <form id="login">
-    <div class="f"><label for="senha">Senha da organização</label><input id="senha" type="password" autocomplete="current-password"></div>
+    <div class="f"><label class="t" for="senha">Senha da organização</label><input id="senha" type="password" autocomplete="current-password"></div>
     <button type="submit">Entrar</button>
     <p class="err" id="err" style="flex-basis:100%;margin:0"></p>
   </form>
+
+  <div id="painel" hidden>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-ins" aria-selected="true">Inscritos</button>
+      <button role="tab" id="tab-camp" aria-selected="false">Campeonato</button>
+    </div>
+  </div>
+
   <section id="lista" hidden>
     <div class="bar">
       <div class="total" id="total">0<small>inscritos</small></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" id="copy" class="alt">Copiar lista</button><button type="button" id="reload">Atualizar</button></div>
+      <div class="row"><button type="button" id="copy" class="alt">Copiar lista</button><button type="button" id="reload">Atualizar</button></div>
     </div>
     <p class="muted" id="copied" role="status"></p>
     <div class="scroll"><table><thead><tr><th>#</th><th>Nome</th><th>WhatsApp</th><th>Inscrito em</th></tr></thead><tbody id="rows"></tbody></table></div>
   </section>
+
+  <section id="camp" hidden></section>
 </main>
+<script src="/torneio-lib.js"></script>
 <script>
 (function(){
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+"use strict";
+const T=window.Torneio, esc=T.esc, $=id=>document.getElementById(id);
 const fmtPhone=d=>{d=String(d);const n=d.length>11?d.slice(-11):d;return n.length===11?`(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`:n.length===10?`(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`:d;};
 const waLink=d=>`https://wa.me/${String(d).length<=11?"55"+d:d}`;
 const fmtDate=s=>new Date(s).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
-let senha="", data=[];
+let senha="", inscritos=[];
 try{senha=sessionStorage.getItem("cb-senha")||"";}catch(e){}
-async function load(){
+
+/* ---------------- inscritos ---------------- */
+async function loadInscritos(){
   const r=await fetch("/api/inscritos",{headers:{"x-senha":senha}});
-  if(r.status===401){document.getElementById("err").textContent="Senha errada.";document.getElementById("lista").hidden=true;document.getElementById("login").hidden=false;return;}
-  if(!r.ok){document.getElementById("err").textContent="Não deu pra carregar. Tenta de novo.";return;}
+  if(r.status===401){$("err").textContent="Senha errada.";$("painel").hidden=true;$("lista").hidden=true;$("camp").hidden=true;$("login").hidden=false;return false;}
+  if(!r.ok){$("err").textContent="Não deu pra carregar. Tenta de novo.";return false;}
   try{sessionStorage.setItem("cb-senha",senha);}catch(e){}
-  data=(await r.json()).inscritos;
-  document.getElementById("login").hidden=true; document.getElementById("lista").hidden=false;
-  document.getElementById("total").innerHTML=`${data.length}<small>${data.length===1?"inscrito":"inscritos"}</small>`;
-  document.getElementById("rows").innerHTML=data.length?data.map((p,i)=>`<tr><td>${i+1}</td><td><b>${esc(p.nome)}</b></td><td><a href="${waLink(p.whatsapp)}" target="_blank" rel="noopener">${fmtPhone(p.whatsapp)}</a></td><td class="muted">${fmtDate(p.criado_em)}</td></tr>`).join(""):`<tr><td colspan="4" class="muted">Ninguém inscrito ainda.</td></tr>`;
+  inscritos=(await r.json()).inscritos;
+  $("login").hidden=true; $("painel").hidden=false;
+  $("total").innerHTML=`${inscritos.length}<small>${inscritos.length===1?"inscrito":"inscritos"}</small>`;
+  $("rows").innerHTML=inscritos.length?inscritos.map((p,i)=>`<tr><td>${i+1}</td><td><b>${esc(p.nome)}</b></td><td><a href="${waLink(p.whatsapp)}" target="_blank" rel="noopener">${fmtPhone(p.whatsapp)}</a></td><td class="muted">${fmtDate(p.criado_em)}</td></tr>`).join(""):`<tr><td colspan="4" class="muted">Ninguém inscrito ainda.</td></tr>`;
+  return true;
 }
-document.getElementById("login").addEventListener("submit",e=>{e.preventDefault();senha=document.getElementById("senha").value;document.getElementById("err").textContent="";load();});
-document.getElementById("reload").addEventListener("click",load);
-document.getElementById("copy").addEventListener("click",async()=>{
-  const txt=data.map((p,i)=>`${i+1}. ${p.nome} · ${fmtPhone(p.whatsapp)}`).join("\n");
-  try{await navigator.clipboard.writeText(txt);document.getElementById("copied").textContent="Lista copiada. É só colar no grupo.";}
-  catch(e){document.getElementById("copied").textContent="Não deu pra copiar automaticamente.";}
+$("reload").addEventListener("click",loadInscritos);
+$("copy").addEventListener("click",async()=>{
+  const txt=inscritos.map((p,i)=>`${i+1}. ${p.nome}, ${fmtPhone(p.whatsapp)}`).join("\n");
+  try{await navigator.clipboard.writeText(txt);$("copied").textContent="Lista copiada. É só colar no grupo.";}
+  catch(e){$("copied").textContent="Não deu pra copiar automaticamente.";}
 });
-if(senha) load();
+
+/* ---------------- abas ---------------- */
+function aba(n){
+  $("tab-ins").setAttribute("aria-selected",n==="ins"); $("tab-camp").setAttribute("aria-selected",n==="camp");
+  $("lista").hidden=n!=="ins"; $("camp").hidden=n!=="camp";
+  try{sessionStorage.setItem("cb-aba",n);}catch(e){}
+  if(n==="camp") loadTorneio();
+}
+$("tab-ins").addEventListener("click",()=>aba("ins"));
+$("tab-camp").addEventListener("click",()=>aba("camp"));
+
+/* ---------------- campeonato ---------------- */
+let E=null, versao=0, rascunho=null, extras=[], fora=new Set(), nGrupos=null, ordem=null, kEscolhido=null, msg="", msgCls="";
+const pl=id=>E.jogadores[id]||{nome:"?",time:""};
+const primeiro=id=>esc(pl(id).nome.split(" ")[0]);
+
+async function loadTorneio(){
+  try{const r=await fetch("/api/torneio",{cache:"no-store"});const d=await r.json();E=d.estado;versao=d.versao||0;}
+  catch(e){msg="Não deu pra carregar o campeonato.";msgCls="bad";}
+  render();
+}
+let salvando=Promise.resolve();
+function salvar(novo){
+  msg="Salvando…";msgCls="";setStatus();
+  salvando=salvando.then(async()=>{
+    try{
+      const r=await fetch("/api/torneio",{method:"PUT",headers:{"Content-Type":"application/json","x-senha":senha},body:JSON.stringify({estado:novo,versao})});
+      const d=await r.json().catch(()=>({}));
+      if(r.status===409){msg="Outra pessoa da organização mudou o campeonato ao mesmo tempo. Carreguei a versão mais nova, confira e lance de novo.";msgCls="bad";await loadTorneio();return;}
+      if(!r.ok) throw new Error(d.erro||"erro");
+      versao=d.versao; msg=`Salvo às ${new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}. Já aparece na página pública.`;msgCls="ok";
+    }catch(e){msg="Não salvou. Confere a internet e tenta de novo.";msgCls="bad";}
+    setStatus();
+  });
+  return salvando;
+}
+function setStatus(){const s=$("st");if(s){s.textContent=msg;s.className="status "+msgCls;}}
+
+/* render preservando o foco */
+function render(){
+  const a=document.activeElement, keep=a&&a.id?a.id:null;
+  $("camp").innerHTML=E?telaCampeonato():rascunho?telaRascunho():telaSorteio();
+  setStatus();
+  if(keep&&$(keep)) $(keep).focus();
+}
+
+function jogadoresEscolhidos(){
+  return [...inscritos.map(p=>({id:"i"+p.id,nome:p.nome})),...extras].filter(p=>!fora.has(p.id));
+}
+function telaSorteio(){
+  const js=jogadoresEscolhidos(), n=js.length;
+  const ops=T.opcoesGrupos(n); if(!ops.includes(nGrupos)) nGrupos=T.gruposPadrao(n);
+  const tam=T.tamanhos(n,nGrupos);
+  const lista=[...inscritos.map(p=>({id:"i"+p.id,nome:p.nome})),...extras];
+  return `<div class="card"><h2>Sorteio</h2>
+    <p>Marque quem vai jogar. Dá pra incluir alguém que não se inscreveu pelo site. Depois escolha quantos grupos e sorteie: cada jogador recebe um clube 4 estrelas e um grupo.</p>
+    <div class="checks">${lista.map(p=>`<label><input type="checkbox" data-sel="${esc(p.id)}" ${fora.has(p.id)?"":"checked"}> ${esc(p.nome)}${p.id.startsWith("x")?' <small class="muted">(incluído aqui)</small>':""}</label>`).join("")||'<span class="muted">Ninguém inscrito ainda.</span>'}</div>
+    <div class="row" style="align-items:end;margin-bottom:16px"><div class="f" style="max-width:320px"><label class="t" for="extra">Incluir jogador</label><input id="extra" type="text" maxlength="60" placeholder="Nome e sobrenome"></div><button class="alt" id="add-extra">Incluir</button></div>
+    <div class="row" style="margin-bottom:16px"><label class="t" for="ngr" style="margin:0">Grupos</label>
+      <select id="ngr">${ops.map(g=>`<option value="${g}" ${g===nGrupos?"selected":""}>${g}</option>`).join("")}</select>
+      <span class="muted">${n} ${n===1?"jogador":"jogadores"}${n?`: ${nGrupos===1?"grupo único":"grupos"} de ${[...new Set(tam)].sort((a,b)=>b-a).join(" e ")}`:""}. Ida e volta dentro do grupo.</span></div>
+    <button id="sortear" ${n<2?"disabled":""}>Sortear grupos e times</button>
+    <p class="status" id="st" style="margin-top:10px"></p></div>`;
+}
+function selTime(id,val,used){
+  return `<select id="tm-${esc(id)}" data-time="${esc(id)}" aria-label="Clube">${T.TEAMS.map(t=>`<option value="${t[1]}" ${t[1]===val?"selected":""}>${esc(t[0])}${used.has(t[1])&&t[1]!==val?" (já usado)":""}</option>`).join("")}</select>`;
+}
+function caixasGrupos(est){
+  const used=new Set(Object.values(est.jogadores).map(j=>j.time));
+  return `<div class="groups">${est.grupos.map(g=>`<div class="gbox"><h4>${esc(g.nome)}</h4>${g.ids.map(id=>`<div class="pl"><b>${esc(est.jogadores[id].nome)}</b>${selTime(id,est.jogadores[id].time,used)}</div>`).join("")}</div>`).join("")}</div>`;
+}
+function telaRascunho(){
+  return `<div class="card"><h2>Resultado do sorteio</h2>
+    <p>Ainda não foi publicado. Se quiser, troque o clube de alguém ou sorteie de novo. Quando publicar, os grupos, os times e os jogos aparecem na página pública.</p>
+    ${caixasGrupos(rascunho)}
+    <div class="row" style="margin-top:16px"><button id="publicar">Publicar sorteio</button><button class="alt" id="resortear">Sortear de novo</button><button class="alt" id="voltar">Voltar</button></div>
+    <p class="status" id="st" style="margin-top:10px"></p></div>`;
+}
+function inputGol(id,val,label){
+  const v=val===null||val===undefined?"":val;
+  return `<input class="sc" id="${id}" inputmode="numeric" pattern="[0-9]*" maxlength="2" value="${v}" aria-label="${esc(label)}">`;
+}
+function telaCampeonato(){
+  const falta=T.jogosFaltando(E);
+  let h=`<div class="card"><div class="bar"><h2 style="margin:0">Campeonato publicado</h2><a href="/campeonato" target="_blank" rel="noopener" style="color:var(--navy);font-weight:700">Abrir página pública</a></div>
+    <p class="status" id="st" style="margin:8px 0 0"></p></div>`;
+  /* fase de grupos */
+  h+=`<div class="card"><h2>Fase de grupos</h2><p>Digite os gols e saia do campo. Salva sozinho. ${falta?`Faltam ${falta} ${falta===1?"jogo":"jogos"}.`:"Todos os jogos foram lançados."}</p>
+    <h3>Grupos e clubes</h3>${caixasGrupos(E)}`;
+  const rods=[...new Set(E.jogos.map(j=>j.r))].sort((a,b)=>a-b);
+  h+=`<h3>Jogos</h3><div class="rodadas">${rods.map(r=>`<div><h3 style="margin-top:8px">Rodada ${r}</h3>${E.jogos.filter(j=>j.r===r).map(j=>`<div class="game ${T.jogado(j)?"done":""}">${E.grupos.length>1?`<span class="lbl">${esc(E.grupos[j.g].nome)}</span>`:""}
+      <span class="h">${esc(pl(j.casa).nome)}</span>${inputGol("gc-"+j.id,j.gc,"Gols de "+pl(j.casa).nome)}<span class="x">×</span>${inputGol("gf-"+j.id,j.gf,"Gols de "+pl(j.fora).nome)}<span>${esc(pl(j.fora).nome)}</span></div>`).join("")}</div>`).join("")}</div></div>`;
+  /* mata-mata */
+  h+=`<div class="card"><h2>Mata-mata</h2>`+(E.mata?telaMata():telaGerarMata(falta))+`</div>`;
+  h+=`<div class="card danger-zone"><h2>Recomeçar</h2><p>Apaga grupos, jogos e placares da página pública. As inscrições continuam salvas.</p><button class="danger" id="apagar">Apagar campeonato</button></div>`;
+  return h;
+}
+function rankingAtual(){
+  const r=T.ranking(E), ids=r.map(x=>x.id);
+  if(ordem&&ordem.length===ids.length&&ordem.every(id=>ids.includes(id))) return ordem.map(id=>r.find(x=>x.id===id));
+  return r;
+}
+function telaGerarMata(falta){
+  const n=Object.keys(E.jogadores).length, ops=T.opcoesMata(n);
+  if(!ops.includes(kEscolhido)) kEscolhido=T.mataPadrao(E);
+  const r=rankingAtual();
+  return `<p>${falta?`Dá pra gerar quando a fase de grupos terminar. Faltam ${falta} ${falta===1?"jogo":"jogos"}.`:"A fase de grupos terminou. Confira o ranking e gere o chaveamento."}</p>
+    <p class="muted">O ranking coloca os 1º e 2º de cada grupo na frente, ordenados por pontos, saldo, vitórias e gols. Depois vêm os 3º colocados e assim por diante. Se um desempate for decidido em partida extra, use Subir e Descer pra ajustar.</p>
+    <div class="row"><label class="t" for="kmata" style="margin:0">Vão pro mata-mata</label><select id="kmata">${ops.map(k=>`<option value="${k}" ${k===kEscolhido?"selected":""}>${k} jogadores (${T.NOMES_FASE[k]||"fase de "+k})</option>`).join("")}</select></div>
+    <ol class="rank">${r.map((x,i)=>`<li class="${i<kEscolhido?"in":""}"><span class="n">${i+1}</span><span><b>${esc(x.nome)}</b> <small>${x.pos}º do ${esc(E.grupos[x.g].nome)}, ${x.P} pts, saldo ${x.SG}</small></span>
+      <span class="row" style="gap:4px"><button class="mini" data-up="${i}" ${i===0?"disabled":""} aria-label="Subir ${esc(x.nome)}">Subir</button><button class="mini" data-down="${i}" ${i===r.length-1?"disabled":""} aria-label="Descer ${esc(x.nome)}">Descer</button></span></li>`).join("")}</ol>
+    <button id="gerar-mata" ${falta?"disabled":""}>Gerar mata-mata</button>`;
+}
+function telaMata(){
+  const fs=T.fases(E);
+  let h=`<p>Ida e volta em todas as fases, menos a final. Se o placar agregado empatar, aparece o campo de pênaltis.</p>`;
+  fs.forEach(f=>{
+    h+=`<h3>${f.nome}</h3>`;
+    f.ties.forEach((t,i)=>{
+      const titulo=f.final?"Final":`Confronto ${i+1}`;
+      if(!t.a||!t.b){h+=`<div class="tie"><h4>${titulo}</h4><span class="muted">Aguardando o confronto anterior.</span></div>`;return;}
+      const A=pl(t.a).nome,B=pl(t.b).nome, g=(leg,id)=>t.res[leg]&&id in t.res[leg]?t.res[leg][id]:null;
+      const linha=(leg,lbl,c,fo)=>`<div class="game"><span class="lbl">${lbl}</span><span class="h">${esc(pl(c).nome)}</span>${inputGol(`k-${t.key}-${leg}-${c}`,g(leg,c),"Gols de "+pl(c).nome)}<span class="x">×</span>${inputGol(`k-${t.key}-${leg}-${fo}`,g(leg,fo),"Gols de "+pl(fo).nome)}<span>${esc(pl(fo).nome)}</span></div>`;
+      h+=`<div class="tie"><h4>${titulo}: ${esc(A)} × ${esc(B)}</h4>`;
+      h+=f.final?linha("jogo","Jogo único (com prorrogação)",t.a,t.b):linha("ida","Ida",t.b,t.a)+linha("volta","Volta",t.a,t.b);
+      if(t.precisaPen) h+=linha("pen","Pênaltis",t.a,t.b);
+      if(t.agg&&!f.final) h+=`<div class="res">Agregado: ${esc(A)} ${t.agg[0]} × ${t.agg[1]} ${esc(B)}</div>`;
+      if(t.venc) h+=`<div class="res" style="color:var(--ok)">${f.final?"Campeão":"Classificado"}: ${esc(pl(t.venc).nome)}</div>`;
+      else if(t.precisaPen) h+=`<div class="res muted">Empate no ${f.final?"placar":"agregado"}. Lance os pênaltis.</div>`;
+      h+=`</div>`;
+    });
+  });
+  h+=`<button class="danger" id="desfazer-mata">Desfazer mata-mata</button>`;
+  return h;
+}
+
+/* eventos (delegados) */
+const camp=$("camp");
+camp.addEventListener("change",e=>{
+  const el=e.target;
+  if(el.dataset.sel){ el.checked?fora.delete(el.dataset.sel):fora.add(el.dataset.sel); render(); return; }
+  if(el.id==="ngr"){ nGrupos=Number(el.value); render(); return; }
+  if(el.id==="kmata"){ kEscolhido=Number(el.value); render(); return; }
+  if(el.dataset.time){ const est=E||rascunho; est.jogadores[el.dataset.time].time=el.value; if(E) salvar(E); setTimeout(render); return; }
+  if(el.classList.contains("sc")){
+    const raw=el.value.trim(); if(raw!==""&&!/^\d{1,2}$/.test(raw)){ el.value=""; return; }
+    const v=raw===""?null:Number(raw);
+    if(el.id.startsWith("gc-")||el.id.startsWith("gf-")){
+      const j=E.jogos.find(x=>x.id===el.id.slice(3)); if(!j) return;
+      j[el.id.startsWith("gc-")?"gc":"gf"]=v; ordem=null;
+    }else if(el.id.startsWith("k-")){
+      const [,r,i,leg,...rest]=el.id.split("-"), id=rest.join("-"), key=`${r}-${i}`;
+      const res=E.mata.res[key]=E.mata.res[key]||{}; res[leg]=res[leg]||{};
+      if(v===null) delete res[leg][id]; else res[leg][id]=v;
+    }
+    salvar(E); setTimeout(render); return;
+  }
+});
+camp.addEventListener("keydown",e=>{
+  if(e.key!=="Enter") return;
+  if(e.target.id==="extra"){ e.preventDefault(); addExtra(); return; }
+  if(e.target.classList.contains("sc")){ e.preventDefault(); const all=[...camp.querySelectorAll("input.sc")], i=all.indexOf(e.target); (all[i+1]||e.target).focus(); if(!all[i+1]) e.target.blur(); }
+});
+function addExtra(){
+  const inp=$("extra"), nome=inp.value.trim().replace(/\s+/g," "); if(!nome) return;
+  extras.push({id:"x"+Date.now().toString(36),nome}); render(); $("extra").focus();
+}
+camp.addEventListener("click",async e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  if(b.id==="add-extra") return addExtra();
+  if(b.id==="sortear"||b.id==="resortear"){ rascunho=T.sortear(jogadoresEscolhidos(),nGrupos); msg="";render(); return; }
+  if(b.id==="voltar"){ rascunho=null; render(); return; }
+  if(b.id==="publicar"){ b.disabled=true; E=rascunho; rascunho=null; versao=versao||0; await salvar(E); if(msgCls==="bad"&&!versao){rascunho=E;E=null;} render(); return; }
+  if(b.dataset.up||b.dataset.down){
+    const r=rankingAtual().map(x=>x.id), i=Number(b.dataset.up||b.dataset.down), j=b.dataset.up?i-1:i+1;
+    [r[i],r[j]]=[r[j],r[i]]; ordem=r; render(); return;
+  }
+  if(b.id==="gerar-mata"){ const r=rankingAtual().slice(0,kEscolhido).map(x=>x.id); E.mata={seeds:r,res:{}}; await salvar(E); render(); return; }
+  if(b.id==="desfazer-mata"){ if(!confirm("Desfazer o mata-mata? Os placares do mata-mata serão apagados.")) return; E.mata=null; await salvar(E); render(); return; }
+  if(b.id==="apagar"){ if(!confirm("Apagar o campeonato inteiro? Grupos, jogos e placares somem da página pública.")) return;
+    const r=await fetch("/api/torneio",{method:"PUT",headers:{"Content-Type":"application/json","x-senha":senha},body:JSON.stringify({estado:null})});
+    if(r.ok){E=null;versao=0;ordem=null;msg="Campeonato apagado.";msgCls="ok";}else{msg="Não deu pra apagar.";msgCls="bad";}
+    render(); return; }
+});
+
+/* ---------------- login ---------------- */
+async function entrar(){
+  if(!(await loadInscritos())) return;
+  let a="ins"; try{a=sessionStorage.getItem("cb-aba")||"ins";}catch(e){}
+  aba(a);
+}
+$("login").addEventListener("submit",e=>{e.preventDefault();senha=$("senha").value;$("err").textContent="";entrar();});
+if(senha) entrar();
 })();
 </script>
 </body>

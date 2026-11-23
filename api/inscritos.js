@@ -1,12 +1,5 @@
-import { timingSafeEqual } from "node:crypto";
 import { sql } from "./_db.js";
-
-function senhaOk(given) {
-  const expected = process.env.ADMIN_PASSWORD || "";
-  if (!expected || !given) return false;
-  const a = Buffer.from(String(given)), b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b);
-}
+import { senhaOk } from "./_auth.js";
 
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");

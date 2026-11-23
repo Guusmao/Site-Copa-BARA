@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Grupos, jogos, placares e mata-mata da 1ª Jesus Cup de FIFA.">
+<meta property="og:title" content="Tabela · Jesus Cup">
+<meta property="og:description" content="Grupos, jogos, placares e mata-mata, atualizados pela organização.">
+<meta property="og:image" content="https://copa-bara.vercel.app/og.png">
+<meta name="theme-color" content="#0A2387">
+<link rel="icon" href="/logo.webp" type="image/webp">
+<title>Tabela · Jesus Cup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap">
+<style>
+:root{color-scheme:light;--paper:#F4F4F1;--ink:#000000;--navy:#0A2387;--sky:#1C9BEF;--gold:#FFB000;--red:#E3122D;--grey:#5B5F69;--line:#CFD1D6;--ok:#0F7A4F;
+  --poster:"Anton","Impact","Arial Narrow Bold",sans-serif;--cond:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;--body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.topline{background:var(--ink);color:var(--paper);font-family:var(--cond);font-weight:600;font-size:1rem;padding-top:env(safe-area-inset-top,0px)}
+.topline .wrap{display:flex;justify-content:space-between;gap:12px;padding-block:8px}
+.topline a{color:var(--paper);text-decoration:none}
+.topline a:hover{color:var(--gold)}
+.head{background:var(--navy);color:#fff}
+.head .wrap{display:flex;align-items:center;gap:18px;padding-block:24px 22px}
+.head img{width:72px;flex:none;transform:rotate(5deg);filter:drop-shadow(5px 5px 0 rgba(0,0,0,.4))}
+.head small{display:block;font-family:var(--cond);font-weight:700;font-size:1.1rem;color:var(--gold)}
+.head h1{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2.6rem,9vw,4.4rem);line-height:.92;margin:2px 0 0}
+.edge{display:grid;grid-template-columns:1fr 1fr 1fr;height:8px}
+.edge i:nth-child(1){background:var(--gold)}.edge i:nth-child(2){background:var(--sky)}.edge i:nth-child(3){background:var(--red)}
+
+.champ{background:var(--ink);color:#fff;text-align:center;padding:26px 16px 30px}
+.champ small{display:block;font-family:var(--cond);font-weight:700;font-size:1.15rem;color:var(--gold)}
+.champ b{display:block;font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2.4rem,9vw,4.2rem);line-height:1.05;margin-top:6px;
+  text-shadow:4px 4px 0 var(--gold),8px 8px 0 var(--sky),12px 12px 0 var(--red)}
+.champ span{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:var(--cond);font-weight:600;font-size:1.1rem;color:#C9CCD3}
+
+.tabs{display:flex;gap:0;margin-top:26px;border:3px solid var(--ink);background:#fff;width:max-content;max-width:100%}
+.tabs button{font:inherit;font-family:var(--cond);font-weight:700;font-size:1.12rem;padding:10px 18px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.tabs button + button{border-left:3px solid var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:#fff}
+.tabs button:hover:not([aria-selected="true"]){background:#EEF0F6}
+main{padding-block:0 48px}
+.panel{padding-top:22px}
+.meta{font-size:.92rem;color:var(--grey);margin:14px 0 0}
+.empty{border:3px solid var(--ink);background:#fff;padding:22px;margin-top:26px;max-width:620px}
+.empty h2{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:2rem;line-height:1;margin:0 0 8px}
+.empty p{margin:0 0 14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--ink);color:#fff;text-decoration:none;padding:12px 18px;font-family:var(--poster);font-weight:400;font-size:1.25rem;box-shadow:inset 0 -5px 0 var(--red)}
+.btn:hover{background:var(--navy)}
+
+h2.sec{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:1.7rem;line-height:1;margin:0 0 10px;padding-bottom:6px;border-bottom:3px solid var(--ink)}
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:26px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;background:#fff;border:3px solid var(--ink);font-variant-numeric:tabular-nums}
+th{font-family:var(--cond);font-weight:700;font-size:.98rem;text-align:center;padding:8px 8px;background:var(--gold);border-bottom:3px solid var(--ink);white-space:nowrap}
+th.l{text-align:left}
+td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.pos{font-family:var(--cond);font-weight:800;width:2.2em;border-left:6px solid transparent}
+tr.q td.pos{border-left-color:var(--navy)}
+td.pl{text-align:left;white-space:normal;min-width:150px}
+td.pl b{display:block;line-height:1.2}
+.club{display:flex;align-items:center;gap:6px;font-family:var(--cond);font-weight:600;font-size:.95rem;color:var(--grey);margin-top:2px}
+.esc{width:20px;height:20px;object-fit:contain;flex:none}
+td.pts{font-family:var(--poster);font-size:1.25rem;font-weight:400}
+@media (max-width:460px){th,td{padding:8px 4px}td.pl{min-width:0}th.gp,td.gp{display:none}td.pts{font-size:1.1rem}}
+.legend{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--grey);margin-top:14px}
+.legend i{display:inline-block;width:6px;height:18px;background:var(--navy)}
+
+/* jogos */
+.filter{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.filter button{font:inherit;font-family:var(--cond);font-weight:700;font-size:1rem;padding:6px 12px;border:2px solid var(--ink);background:#fff;cursor:pointer}
+.filter button[aria-pressed="true"]{background:var(--gold)}
+.round{margin-bottom:24px}
+.round h3{font-family:var(--cond);font-weight:800;font-size:1.3rem;margin:0 0 8px}
+.match{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;background:#fff;border:2px solid var(--ink);padding:10px 12px;margin-bottom:-2px}
+.match .side{display:flex;align-items:center;gap:8px;min-width:0}
+.match .side.home{justify-content:flex-end;text-align:right}
+.match .side span{min-width:0}
+.match .side b{display:block;line-height:1.15;overflow-wrap:anywhere}
+.match .side em{display:block;font-style:normal;font-family:var(--cond);font-weight:600;font-size:.9rem;color:var(--grey)}
+.score{font-family:var(--poster);font-size:1.6rem;line-height:1;min-width:84px;text-align:center;font-variant-numeric:tabular-nums}
+.score.wait{font-family:var(--cond);font-weight:700;font-size:1rem;color:var(--grey)}
+.tag{font-family:var(--cond);font-weight:700;font-size:.85rem;color:var(--grey);grid-column:1/-1;margin-bottom:-4px}
+@media (max-width:560px){.match .side em{display:none}.score{min-width:64px;font-size:1.4rem}.match{padding:9px 8px;gap:6px}}
+
+/* mata-mata */
+.bracket{display:flex;gap:22px;overflow-x:auto;padding-bottom:10px;align-items:stretch}
+.col{flex:0 0 min(300px,82vw);display:flex;flex-direction:column}
+.col h3{font-family:var(--cond);font-weight:800;font-size:1.25rem;margin:0 0 10px}
+.col .ties{display:flex;flex-direction:column;justify-content:space-around;gap:16px;flex:1}
+.tie{background:#fff;border:3px solid var(--ink)}
+.tie .hd{display:grid;grid-template-columns:minmax(0,1fr) 2.4em 2.9em 2.9em;font-family:var(--cond);font-weight:700;font-size:.8rem;color:var(--grey);padding:4px 8px 0;text-align:center}
+.tie.f .hd{grid-template-columns:minmax(0,1fr) 2.6em}
+.tie .hd span:first-child{text-align:left}
+.tie .row{display:grid;grid-template-columns:minmax(0,1fr) 2.4em 2.9em 2.9em;align-items:center;padding:7px 8px;text-align:center;font-variant-numeric:tabular-nums}
+.tie.f .row{grid-template-columns:minmax(0,1fr) 2.6em}
+.tie .row + .row{border-top:1px solid var(--line)}
+.tie .who{display:flex;align-items:center;gap:6px;text-align:left;min-width:0}
+.tie .who b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.tie .who small{font-family:var(--cond);font-weight:700;color:var(--grey);font-size:.85rem;min-width:1.1em}
+.tie .agg{font-family:var(--poster);font-size:1.2rem}
+.tie .row.w{background:#FFF4D6}
+.tie .row.w b{font-weight:800}
+.tie .row.l{color:var(--grey)}
+.tie .tbd{color:var(--grey);font-style:italic;font-weight:500}
+.tie .pen{font-family:var(--cond);font-weight:600;font-size:.9rem;color:var(--grey);padding:0 8px 6px;text-align:right}
+footer{border-top:3px solid var(--ink)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;padding-block:16px 26px;font-size:.92rem;color:var(--grey)}
+footer a{color:var(--ink);font-weight:700}
+footer .credit{flex-basis:100%;margin:6px 0 0;padding-top:12px;border-top:1px solid rgba(0,0,0,.15)}
+footer .credit strong{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="topline"><div class="wrap"><a href="/">Voltar pro início</a><a href="/regulamento">Regulamento</a></div></div>
+<header class="head">
+  <div class="wrap">
+    <img src="/logo.webp" alt="Escudo do torneio">
+    <div><small>1ª edição, sábado, 19 de dezembro</small><h1>Tabela e jogos</h1></div>
+  </div>
+  <div class="edge"><i></i><i></i><i></i></div>
+</header>
+<div id="champ" class="champ" hidden></div>
+
+<main class="wrap">
+  <div id="empty" class="empty" hidden>
+    <h2>Sorteio em breve</h2>
+    <p>Os grupos e os times ainda não foram sorteados. Assim que a organização fizer o sorteio, a tabela e os jogos aparecem aqui.</p>
+    <a class="btn" href="/#inscricao">Fazer inscrição</a>
+  </div>
+  <div id="app" hidden>
+    <div class="tabs" role="tablist" aria-label="Seções">
+      <button role="tab" id="t-grupos" aria-controls="p-grupos" aria-selected="true">Grupos</button>
+      <button role="tab" id="t-jogos" aria-controls="p-jogos" aria-selected="false">Jogos</button>
+      <button role="tab" id="t-mata" aria-controls="p-mata" aria-selected="false">Mata-mata</button>
+    </div>
+    <section class="panel" role="tabpanel" id="p-grupos" aria-labelledby="t-grupos"></section>
+    <section class="panel" role="tabpanel" id="p-jogos" aria-labelledby="t-jogos" hidden></section>
+    <section class="panel" role="tabpanel" id="p-mata" aria-labelledby="t-mata" hidden></section>
+    <p class="meta" id="meta"></p>
+  </div>
+  <p class="meta" id="loading">Carregando a tabela…</p>
+</main>
+<footer><div class="wrap"><a href="/regulamento">Ler o regulamento</a><a href="/">Voltar pro início</a><p class="credit">Site feito por <strong>Felipe Gusmão</strong></p></div></footer>
+
+<script src="/torneio-lib.js"></script>
+<script>
+(function(){
+"use strict";
+const T=window.Torneio, esc=T.esc;
+let E=null, jogoFiltro="todos";
+const $=id=>document.getElementById(id);
+const nomeTime=a=>T.TEAM[a]?T.TEAM[a].nome:"";
+const pl=id=>E.jogadores[id]||{nome:"?",time:""};
+
+function grupos(){
+  const html=E.grupos.map((g,gi)=>{
+    const rows=T.classificacao(E,gi);
+    return `<div><h2 class="sec">${esc(g.nome)}</h2><div class="scroll"><table>
+      <thead><tr><th>#</th><th class="l">Jogador</th><th title="Pontos">P</th><th title="Jogos">J</th><th title="Vitórias">V</th><th title="Empates">E</th><th title="Derrotas">D</th><th title="Saldo de gols">SG</th><th class="gp" title="Gols pró">GP</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr class="${r.pos<=2?"q":""}"><td class="pos">${r.pos}</td>
+        <td class="pl"><b>${esc(r.nome)}</b><span class="club">${T.escudo(r.time,18)}${esc(nomeTime(r.time))}</span></td>
+        <td class="pts">${r.P}</td><td>${r.J}</td><td>${r.V}</td><td>${r.E}</td><td>${r.D}</td><td>${r.SG>0?"+":""}${r.SG}</td><td class="gp">${r.GP}</td></tr>`).join("")}</tbody></table></div></div>`;
+  }).join("");
+  $("p-grupos").innerHTML=`<div class="groups">${html}</div><p class="legend"><i></i>Os 2 primeiros de cada grupo vão pro mata-mata. Os melhores terceiros podem completar as vagas.</p>`;
+}
+
+function side(id,home){
+  const p=pl(id);
+  const inner=`<span><b>${esc(p.nome)}</b><em>${esc(nomeTime(p.time))}</em></span>`;
+  return `<div class="side ${home?"home":""}">${home?inner+T.escudo(p.time,26):T.escudo(p.time,26)+inner}</div>`;
+}
+function jogos(){
+  const multi=E.grupos.length>1;
+  const btns=multi?`<div class="filter" role="group" aria-label="Filtrar por grupo"><button data-f="todos" aria-pressed="${jogoFiltro==="todos"}">Todos</button>${E.grupos.map((g,gi)=>`<button data-f="${gi}" aria-pressed="${jogoFiltro===String(gi)}">${esc(g.nome)}</button>`).join("")}</div>`:"";
+  const lista=E.jogos.filter(j=>jogoFiltro==="todos"||String(j.g)===jogoFiltro);
+  const rods=[...new Set(lista.map(j=>j.r))].sort((a,b)=>a-b);
+  const html=rods.map(r=>`<div class="round"><h3>Rodada ${r}</h3>${lista.filter(j=>j.r===r).map(j=>`<div class="match">${multi&&jogoFiltro==="todos"?`<span class="tag">${esc(E.grupos[j.g].nome)}</span>`:""}
+      ${side(j.casa,true)}<div class="score ${T.jogado(j)?"":"wait"}">${T.jogado(j)?`${T.num(j.gc)} × ${T.num(j.gf)}`:"A jogar"}</div>${side(j.fora,false)}</div>`).join("")}</div>`).join("");
+  $("p-jogos").innerHTML=btns+html;
+  $("p-jogos").querySelectorAll(".filter button").forEach(b=>b.addEventListener("click",()=>{jogoFiltro=b.dataset.f;jogos();}));
+}
+
+function mata(){
+  const fs=T.fases(E);
+  if(!fs.length){
+    const falta=T.jogosFaltando(E);
+    $("p-mata").innerHTML=`<div class="empty" style="margin-top:0"><h2>Ainda não começou</h2><p>${falta?`O chaveamento sai quando a fase de grupos terminar. Faltam ${falta} ${falta===1?"jogo":"jogos"}.`:"A fase de grupos acabou. O chaveamento sai em instantes."}</p></div>`;
+    return;
+  }
+  const g=(o,id)=>{const v=o&&id in o?T.num(o[id]):null;return v===null?"":v;};
+  const row=(t,id,seed)=>{
+    if(!id) return `<div class="row"><span class="who"><b class="tbd">A definir</b></span>${t.final?"<span></span>":"<span></span><span></span><span></span>"}</div>`;
+    const p=pl(id), cls=t.venc?(t.venc===id?"w":"l"):"";
+    const agg=t.agg?(id===t.a?t.agg[0]:t.agg[1]):"";
+    const cells=t.final?`<span class="agg">${g(t.res.jogo,id)}</span>`:`<span>${g(t.res.ida,id)}</span><span>${g(t.res.volta,id)}</span><span class="agg">${agg}</span>`;
+    return `<div class="row ${cls}"><span class="who"><small>${seed||""}</small>${T.escudo(p.time,20)}<b title="${esc(p.nome)}">${esc(p.nome)}</b></span>${cells}</div>`;
+  };
+  $("p-mata").innerHTML=`<div class="bracket">${fs.map(f=>`<div class="col"><h3>${f.nome}</h3><div class="ties">${f.ties.map(t=>{
+      const pen=t.precisaPen&&t.res.pen&&t.a in t.res.pen&&t.b in t.res.pen?`<div class="pen">Pênaltis: ${esc(pl(t.a).nome.split(" ")[0])} ${t.res.pen[t.a]} × ${t.res.pen[t.b]} ${esc(pl(t.b).nome.split(" ")[0])}</div>`:"";
+      return `<div class="tie ${t.final?"f":""}"><div class="hd"><span></span>${t.final?"<span>Placar</span>":"<span>Ida</span><span>Volta</span><span>Total</span>"}</div>${row(t,t.a,t.seedA)}${row(t,t.b,t.seedB)}${pen}</div>`;}).join("")}</div></div>`).join("")}</div>
+    <p class="legend">O número antes do nome é a posição no ranking geral da fase de grupos. A ida é na casa de quem tem o número maior.</p>`;
+}
+
+function campeao(){
+  const c=T.campeao(E), box=$("champ");
+  if(!c){box.hidden=true;return;}
+  const p=pl(c);
+  box.innerHTML=`<small>Campeão da 1ª edição</small><b>${esc(p.nome)}</b><span>${T.escudo(p.time,24)}${esc(nomeTime(p.time))}</span>`;
+  box.hidden=false;
+}
+
+const tabs=["grupos","jogos","mata"];
+function show(name,push){
+  tabs.forEach(t=>{const on=t===name;$("t-"+t).setAttribute("aria-selected",on);$("p-"+t).hidden=!on;});
+  if(push) history.replaceState(null,"","#"+name);
+}
+tabs.forEach(t=>$("t-"+t).addEventListener("click",()=>show(t,true)));
+document.querySelector(".tabs").addEventListener("keydown",e=>{
+  if(!["ArrowLeft","ArrowRight"].includes(e.key)) return;
+  const cur=tabs.findIndex(t=>$("t-"+t).getAttribute("aria-selected")==="true");
+  const n=tabs[(cur+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length]; show(n,true); $("t-"+n).focus();
+});
+
+let first=true;
+async function load(){
+  let d;
+  try{const r=await fetch("/api/torneio",{cache:"no-store"}); if(!r.ok) throw 0; d=await r.json();}
+  catch(e){ if(first) $("loading").textContent="Não deu pra carregar a tabela. Confere a internet e recarrega a página."; return; }
+  $("loading").hidden=true;
+  E=d.estado;
+  if(!E){$("empty").hidden=false;$("app").hidden=true;$("champ").hidden=true;first=false;return;}
+  $("empty").hidden=true;$("app").hidden=false;
+  grupos();jogos();mata();campeao();
+  if(d.atualizado_em) $("meta").textContent=`Atualizado em ${new Date(d.atualizado_em).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}. A página se atualiza sozinha.`;
+  if(first){
+    const h=location.hash.slice(1);
+    show(tabs.includes(h)?h:(E.mata?"mata":"grupos"),false);
+    first=false;
+  }
+}
+load();
+setInterval(()=>{if(!document.hidden) load();},30000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden) load();});
+})();
+</script>
+</body>
+</html>
