@@ -16,6 +16,17 @@
   ],
   "redirects": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "copa-bara.vercel.app"
+        }
+      ],
+      "destination": "https://jesus-cup.vercel.app/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {
