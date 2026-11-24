@@ -187,19 +187,18 @@ footer a{color:var(--ink);font-weight:700}
   <div class="entry">
     <div class="stub">
       <h2>Ficha de inscrição</h2>
-      <p>Preenche aí pra gente saber quem vai jogar. Depois é só entrar no grupo da Copa no WhatsApp.</p>
+      <p>Coloca seu nome pra gente saber quem vai jogar. Depois é só pagar a inscrição e entrar no grupo da Copa no WhatsApp.</p>
       <a class="rules" href="/regulamento">Ler o regulamento</a>
-      <div class="no"><span>Inscritos</span><b><span id="count">0</span></b></div>
+      <div class="no"><span>Confirmados (pagos)</span><b><span id="count">0</span></b></div>
     </div>
     <form id="reg" novalidate>
       <div class="field"><label for="f-name">Nome e sobrenome</label><input id="f-name" name="name" maxlength="60" autocomplete="name" placeholder="Ex.: João Silva"><span class="err" id="e-name"></span></div>
-      <div class="field"><label for="f-phone">WhatsApp</label><input id="f-phone" name="phone" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(11) 90000-0000"><span class="err" id="e-phone"></span></div>
       <p class="hint" style="margin:0">A taxa de inscrição é de R$ 10. Ao se inscrever você concorda com o <a href="/regulamento" style="color:inherit;font-weight:700">regulamento</a>.</p>
       <button class="go" type="submit">Confirmar inscrição</button>
     </form>
     <div class="done" id="done" hidden>
       <h3 id="done-title">Tá dentro!</h3>
-      <p>Falta pouco: paga a taxa de R$ 10 pelo Pix aqui embaixo e entra no grupo da Copa no WhatsApp. É lá que saem o local, o horário e o sorteio dos times.</p>
+      <p>Sua inscrição está aguardando pagamento. Paga os R$ 10 pelo Pix aqui embaixo e manda o comprovante no grupo do WhatsApp. Ela é confirmada quando a organização vê o Pix.</p>
       <a class="go pay" href="#pagamento">Pagar os R$ 10 no Pix</a>
       <a class="go wa" id="wa" href="#" target="_blank" rel="noopener">Entrar no grupo do WhatsApp</a>
       <span class="hint" id="wa-note"></span>
@@ -316,33 +315,32 @@ function pick(abbr){
 /* Inscrições: salvas no banco pela API /api/inscricao. */
 let WA="";
 const showCount=n=>{document.getElementById("count").textContent=String(n).padStart(2,"0");};
-fetch("/api/inscricao").then(r=>r.ok?r.json():null).then(d=>{if(d){showCount(d.total);WA=d.whatsapp||"";}}).catch(()=>{});
+fetch("/api/inscricao").then(r=>r.ok?r.json():null).then(d=>{if(d){showCount(d.pagos??0);WA=d.whatsapp||"";}}).catch(()=>{});
 
 const form=document.getElementById("reg"), btn=form.querySelector("button");
 function setErr(id,msg){const i=document.getElementById("f-"+id);document.getElementById("e-"+id).textContent=msg;i.setAttribute("aria-invalid",msg?"true":"false");return !msg;}
 form.addEventListener("submit",async e=>{
   e.preventDefault();
-  const name=form.name.value.trim(), phone=form.phone.value.trim(), digits=phone.replace(/\D/g,"");
-  const ok=[setErr("name",!name?"Coloca seu nome e sobrenome.":name.split(/\s+/).filter(w=>w.length>1).length<2?"Coloca o sobrenome também.":""),
-            setErr("phone",digits.length>=10&&digits.length<=13?"":"Coloca um WhatsApp com DDD.")];
+  const name=form.name.value.trim();
+  const ok=[setErr("name",!name?"Coloca seu nome e sobrenome.":name.split(/\s+/).filter(w=>w.length>1).length<2?"Coloca o sobrenome também.":"")];
   if(ok.includes(false)){form.querySelector('[aria-invalid="true"]').focus();return;}
   btn.disabled=true; const label=btn.firstChild.textContent; btn.firstChild.textContent="Enviando… ";
   let res,data={};
-  try{res=await fetch("/api/inscricao",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({nome:name,whatsapp:phone})});data=await res.json().catch(()=>({}));}
+  try{res=await fetch("/api/inscricao",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({nome:name})});data=await res.json().catch(()=>({}));}
   catch(err){res=null;}
   btn.disabled=false; btn.firstChild.textContent=label;
   if(!res||!res.ok){
-    if(res&&res.status===409){setErr("phone","Esse WhatsApp já está inscrito.");document.getElementById("f-phone").focus();}
-    else setErr("phone",data.erro||"Não deu pra enviar agora. Confere a internet e tenta de novo.");
+    setErr("name",res&&res.status===409?"Esse nome já está inscrito. Se for outra pessoa, coloca o nome do meio também.":data.erro||"Não deu pra enviar agora. Confere a internet e tenta de novo.");
+    document.getElementById("f-name").focus();
     return;
   }
-  if(typeof data.total==="number") showCount(data.total);
+  if(typeof data.pagos==="number") showCount(data.pagos);
   WA=data.whatsapp||WA;
   form.hidden=true; const d=document.getElementById("done"); d.hidden=false;
   document.getElementById("done-title").textContent=`${name.split(" ")[0]}, tá dentro!`;
   const wa=document.getElementById("wa"), note=document.getElementById("wa-note");
   if(WA){wa.href=WA; note.textContent="";}
-  else{wa.removeAttribute("href"); wa.setAttribute("aria-disabled","true"); note.textContent="O link do grupo sai em breve. A organização vai te chamar no WhatsApp.";}
+  else{wa.removeAttribute("href"); wa.setAttribute("aria-disabled","true"); note.textContent="O link do grupo sai em breve aqui nesta página.";}
 });
 document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{
   const st=document.getElementById("pay-status");

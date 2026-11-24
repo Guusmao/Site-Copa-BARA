@@ -85,6 +85,9 @@ input.sc:focus{outline:3px solid var(--gold);outline-offset:0}
 .tie{border:2px solid var(--ink);padding:10px 12px;margin-bottom:12px;background:var(--paper)}
 .tie h4{font-family:var(--cond);font-weight:800;font-size:1.1rem;margin:0 0 4px}
 .tie .res{font-family:var(--cond);font-weight:700;margin-top:6px}
+.badge{font-family:var(--cond);font-weight:700;font-size:.95rem;padding:2px 8px;white-space:nowrap}
+.badge.ok{background:#DDF3E8;color:var(--ok)}
+.badge.wait{background:#FFF4D6;color:#7A5200}
 .danger-zone{border-color:var(--err)}
 @media (max-width:560px){.game{grid-template-columns:minmax(0,1fr) 2.8em auto 2.8em minmax(0,1fr);font-size:.95rem}}
 </style>
@@ -111,7 +114,7 @@ input.sc:focus{outline:3px solid var(--gold);outline-offset:0}
       <div class="row"><button type="button" id="copy" class="alt">Copiar lista</button><button type="button" id="reload">Atualizar</button></div>
     </div>
     <p class="muted" id="copied" role="status"></p>
-    <div class="scroll"><table><thead><tr><th>#</th><th>Nome</th><th>WhatsApp</th><th>Inscrito em</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div class="scroll"><table><thead><tr><th>#</th><th>Nome</th><th>Pagamento</th><th>Inscrito em</th></tr></thead><tbody id="rows"></tbody></table></div>
   </section>
 
   <section id="camp" hidden></section>
@@ -124,7 +127,7 @@ const T=window.Torneio, esc=T.esc, $=id=>document.getElementById(id);
 const fmtPhone=d=>{d=String(d);const n=d.length>11?d.slice(-11):d;return n.length===11?`(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`:n.length===10?`(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`:d;};
 const waLink=d=>`https://wa.me/${String(d).length<=11?"55"+d:d}`;
 const fmtDate=s=>new Date(s).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
-let senha="", inscritos=[];
+let senha="", inscritos=[], vistos=new Set(), fora=new Set();
 try{senha=sessionStorage.getItem("cb-senha")||"";}catch(e){}
 
 /* ---------------- inscritos ---------------- */
@@ -135,13 +138,32 @@ async function loadInscritos(){
   try{sessionStorage.setItem("cb-senha",senha);}catch(e){}
   inscritos=(await r.json()).inscritos;
   $("login").hidden=true; $("painel").hidden=false;
-  $("total").innerHTML=`${inscritos.length}<small>${inscritos.length===1?"inscrito":"inscritos"}</small>`;
-  $("rows").innerHTML=inscritos.length?inscritos.map((p,i)=>`<tr><td>${i+1}</td><td><b>${esc(p.nome)}</b></td><td><a href="${waLink(p.whatsapp)}" target="_blank" rel="noopener">${fmtPhone(p.whatsapp)}</a></td><td class="muted">${fmtDate(p.criado_em)}</td></tr>`).join(""):`<tr><td colspan="4" class="muted">Ninguém inscrito ainda.</td></tr>`;
+  inscritos.forEach(p=>{ if(!p.pago&&!vistos.has("i"+p.id)) fora.add("i"+p.id); vistos.add("i"+p.id); });
+  desenharLista();
   return true;
 }
+function desenharLista(){
+  const pagos=inscritos.filter(p=>p.pago).length;
+  $("total").innerHTML=`${inscritos.length}<small>${inscritos.length===1?"inscrito":"inscritos"}, ${pagos} ${pagos===1?"pago":"pagos"}</small>`;
+  $("rows").innerHTML=inscritos.length?inscritos.map((p,i)=>`<tr><td>${i+1}</td><td><b>${esc(p.nome)}</b>${p.whatsapp?`<br><a href="${waLink(p.whatsapp)}" target="_blank" rel="noopener" class="muted">${fmtPhone(p.whatsapp)}</a>`:""}</td>
+    <td><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="badge ${p.pago?"ok":"wait"}">${p.pago?"Pago":"Aguardando pagamento"}</span><button class="mini" data-pago="${p.id}" data-v="${p.pago?0:1}">${p.pago?"Desmarcar":"Marcar como pago"}</button></div></td>
+    <td class="muted">${fmtDate(p.criado_em)}</td></tr>`).join(""):`<tr><td colspan="4" class="muted">Ninguém inscrito ainda.</td></tr>`;
+}
+$("rows").addEventListener("click",async e=>{
+  const b=e.target.closest("button[data-pago]"); if(!b) return;
+  const id=Number(b.dataset.pago), pago=b.dataset.v==="1"; b.disabled=true;
+  try{
+    const r=await fetch("/api/inscritos",{method:"PATCH",headers:{"Content-Type":"application/json","x-senha":senha},body:JSON.stringify({id,pago})});
+    if(!r.ok) throw 0;
+    const p=inscritos.find(x=>x.id===id); p.pago=pago;
+    if(pago) fora.delete("i"+id); else fora.add("i"+id);
+    $("copied").textContent=pago?`${p.nome} marcado como pago.`:`${p.nome} voltou para aguardando pagamento.`;
+  }catch(err){ $("copied").textContent="Não salvou. Confere a internet e tenta de novo."; }
+  desenharLista();
+});
 $("reload").addEventListener("click",loadInscritos);
 $("copy").addEventListener("click",async()=>{
-  const txt=inscritos.map((p,i)=>`${i+1}. ${p.nome}, ${fmtPhone(p.whatsapp)}`).join("\n");
+  const txt=inscritos.map((p,i)=>`${i+1}. ${p.nome}${p.pago?" (pago)":" (aguardando pagamento)"}`).join("\n");
   try{await navigator.clipboard.writeText(txt);$("copied").textContent="Lista copiada. É só colar no grupo.";}
   catch(e){$("copied").textContent="Não deu pra copiar automaticamente.";}
 });
@@ -157,7 +179,7 @@ $("tab-ins").addEventListener("click",()=>aba("ins"));
 $("tab-camp").addEventListener("click",()=>aba("camp"));
 
 /* ---------------- campeonato ---------------- */
-let E=null, versao=0, rascunho=null, extras=[], fora=new Set(), nGrupos=null, ordem=null, kEscolhido=null, msg="", msgCls="";
+let E=null, versao=0, rascunho=null, extras=[], nGrupos=null, ordem=null, kEscolhido=null, msg="", msgCls="";
 const pl=id=>E.jogadores[id]||{nome:"?",time:""};
 const primeiro=id=>esc(pl(id).nome.split(" ")[0]);
 
@@ -198,10 +220,10 @@ function telaSorteio(){
   const js=jogadoresEscolhidos(), n=js.length;
   const ops=T.opcoesGrupos(n); if(!ops.includes(nGrupos)) nGrupos=T.gruposPadrao(n);
   const tam=T.tamanhos(n,nGrupos);
-  const lista=[...inscritos.map(p=>({id:"i"+p.id,nome:p.nome})),...extras];
+  const lista=[...inscritos.map(p=>({id:"i"+p.id,nome:p.nome,pago:p.pago})),...extras];
   return `<div class="card"><h2>Sorteio</h2>
-    <p>Marque quem vai jogar. Dá pra incluir alguém que não se inscreveu pelo site. Depois escolha quantos grupos e sorteie: cada jogador recebe um clube 4 estrelas e um grupo.</p>
-    <div class="checks">${lista.map(p=>`<label><input type="checkbox" data-sel="${esc(p.id)}" ${fora.has(p.id)?"":"checked"}> ${esc(p.nome)}${p.id.startsWith("x")?' <small class="muted">(incluído aqui)</small>':""}</label>`).join("")||'<span class="muted">Ninguém inscrito ainda.</span>'}</div>
+    <p>Marque quem vai jogar. Quem já pagou vem marcado. Dá pra incluir alguém que não se inscreveu pelo site. Depois escolha quantos grupos e sorteie: cada jogador recebe um clube 4 estrelas e um grupo.</p>
+    <div class="checks">${lista.map(p=>`<label><input type="checkbox" data-sel="${esc(p.id)}" ${fora.has(p.id)?"":"checked"}> ${esc(p.nome)}${p.id.startsWith("x")?' <small class="muted">(incluído aqui)</small>':p.pago?"":' <small class="muted">(aguardando pagamento)</small>'}</label>`).join("")||'<span class="muted">Ninguém inscrito ainda.</span>'}</div>
     <div class="row" style="align-items:end;margin-bottom:16px"><div class="f" style="max-width:320px"><label class="t" for="extra">Incluir jogador</label><input id="extra" type="text" maxlength="60" placeholder="Nome e sobrenome"></div><button class="alt" id="add-extra">Incluir</button></div>
     <div class="row" style="margin-bottom:16px"><label class="t" for="ngr" style="margin:0">Grupos</label>
       <select id="ngr">${ops.map(g=>`<option value="${g}" ${g===nGrupos?"selected":""}>${g}</option>`).join("")}</select>
