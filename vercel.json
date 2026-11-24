@@ -13,5 +13,18 @@
   ],
   "regions": [
     "gru1"
+  ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "copa-bara.vercel.app"
+        }
+      ],
+      "destination": "https://jesus-cup.vercel.app/:path*",
+      "permanent": true
+    }
   ]
 }
