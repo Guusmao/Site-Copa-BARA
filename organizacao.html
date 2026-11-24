@@ -91,6 +91,20 @@ input.sc:focus{outline:3px solid var(--gold);outline-offset:0}
 .badge{font-family:var(--cond);font-weight:700;font-size:.95rem;padding:2px 8px;white-space:nowrap}
 .badge.ok{background:#DDF3E8;color:var(--ok)}
 .badge.wait{background:#FFF4D6;color:#7A5200}
+@media (max-width:640px){
+  #lista .scroll{border:0;background:transparent;overflow:visible}
+  #lista table,#lista tbody{display:block}
+  #lista thead{display:none}
+  #lista tr{display:grid;grid-template-columns:2em minmax(0,1fr);gap:6px 8px;background:#fff;border:3px solid var(--ink);padding:12px;margin-bottom:10px}
+  #lista td{display:block;border:0;padding:0;white-space:normal;grid-column:2}
+  #lista td:first-child{grid-column:1;grid-row:1 / span 3;font-family:var(--cond);font-weight:800;font-size:1.1rem}
+  #lista td .row{flex-wrap:wrap!important}
+  #lista td[colspan]{grid-column:1 / -1}
+  #lista td.muted{font-size:.9rem}
+  #lista button.mini{padding:6px 12px}
+  .bar{align-items:flex-end}
+  header h1{font-size:1.7rem}
+}
 .danger-zone{border-color:var(--err)}
 @media (max-width:560px){.game{grid-template-columns:minmax(0,1fr) 2.8em auto 2.8em minmax(0,1fr);font-size:.95rem}}
 </style>
