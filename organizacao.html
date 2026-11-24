@@ -358,7 +358,7 @@ camp.addEventListener("change",e=>{
       const j=E.jogos.find(x=>x.id===el.id.slice(3)); if(!j) return;
       j[el.id.startsWith("gc-")?"gc":"gf"]=v; ordem=null;
     }else if(el.id.startsWith("k-")){
-      const [,r,i,leg,...rest]=el.id.split("-"), id=rest.join("-"), key=`${r}-${i}`;
+      const parts=el.id.slice(2).split("-"), key=parts[0]==="t3"?parts.shift():parts.shift()+"-"+parts.shift(), leg=parts.shift(), id=parts.join("-");
       const res=E.mata.res[key]=E.mata.res[key]||{}; res[leg]=res[leg]||{};
       if(v===null) delete res[leg][id]; else res[leg][id]=v;
     }
