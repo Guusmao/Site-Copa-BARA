@@ -54,9 +54,10 @@ button,input{font:inherit;color:inherit}
   @keyframes press{from{text-shadow:0 0 0 var(--gold),0 0 0 var(--sky),0 0 0 var(--red),0 0 0 var(--ink)}}
 }
 .shield{align-self:center;width:clamp(110px,20vw,210px);transform:rotate(6deg);filter:drop-shadow(8px 8px 0 rgba(0,0,0,.45))}
-.billing{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:stretch;margin-top:26px;border-top:3px solid #fff}
-.billing > div{padding:14px 22px 18px 0;margin-right:22px}
-.billing > div + div{border-left:3px solid #fff;padding-left:22px}
+.billing{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;margin-top:26px;border-top:3px solid #fff}
+.billing > div{padding:14px 22px 18px 0}
+.billing > div:nth-child(even){border-left:3px solid #fff;padding-left:22px}
+.billing > div:nth-child(n+3){border-top:3px solid #fff}
 .billing small{display:block;font-family:var(--cond);font-weight:700;font-size:1.05rem;color:var(--gold)}
 .billing b{display:block;font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(1.6rem,4.6vw,2.4rem);line-height:1;margin-top:4px}
 .billing span{display:block;font-size:.95rem;opacity:.9;max-width:34ch;margin-top:4px}
@@ -67,8 +68,10 @@ button,input{font:inherit;color:inherit}
   .shield{position:absolute;right:16px;top:58px;width:92px}
   .vem{margin:92px 0 0 4px}
   .shield{top:calc(env(safe-area-inset-top,0px) + 28px)}
-  .billing > div{flex:1 1 100%;margin-right:0;padding-right:0}
-  .billing > div + div{border-left:0;border-top:3px solid #fff;padding-left:0}
+  .billing{grid-template-columns:1fr}
+  .billing > div{padding-right:0}
+  .billing > div:nth-child(even){border-left:0;padding-left:0}
+  .billing > div + div{border-top:3px solid #fff}
   .go{font-size:1.25rem}
   #clubs-n{display:none}
 }
@@ -152,6 +155,7 @@ footer a{color:var(--ink);font-weight:700}
     <div class="billing">
       <div><small>Edição</small><b>1ª Copa Bara de FIFA</b></div>
       <div><small>Vagas</small><b>Abertas</b><span>Grupos e mata-mata montados de acordo com o número de inscritos.</span></div>
+      <div><small>Inscrição</small><b>R$ 10</b><span>Taxa por jogador.</span></div>
       <div><small>Data</small><b>19 de dezembro</b><span>Sábado. Local e horário saem no grupo do WhatsApp.</span></div>
     </div>
   </div>
@@ -175,7 +179,7 @@ footer a{color:var(--ink);font-weight:700}
     <form id="reg" novalidate>
       <div class="field"><label for="f-name">Nome e sobrenome</label><input id="f-name" name="name" maxlength="60" autocomplete="name" placeholder="Ex.: João Silva"><span class="err" id="e-name"></span></div>
       <div class="field"><label for="f-phone">WhatsApp</label><input id="f-phone" name="phone" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(11) 90000-0000"><span class="err" id="e-phone"></span></div>
-      <p class="hint" style="margin:0">Ao se inscrever você concorda com o <a href="/regulamento" style="color:inherit;font-weight:700">regulamento</a>.</p>
+      <p class="hint" style="margin:0">A taxa de inscrição é de R$ 10. Ao se inscrever você concorda com o <a href="/regulamento" style="color:inherit;font-weight:700">regulamento</a>.</p>
       <button class="go" type="submit">Confirmar inscrição</button>
     </form>
     <div class="done" id="done" hidden>

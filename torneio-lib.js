@@ -17,8 +17,8 @@ const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math
 const LETRAS="ABCDEFGHIJKLMNOP";
 
 /* ---------- sorteio e fase de grupos ---------- */
-function gruposPadrao(n){ if(n<6) return 1; return Math.max(1,Math.round(n/4)); }
-function opcoesGrupos(n){ const o=[]; for(let g=1;g<=Math.max(1,Math.floor(n/3));g++) o.push(g); return o.length?o:[1]; }
+function gruposPadrao(n){ return Math.max(1,Math.floor(n/4)); } /* grupos com no mínimo 4: ida e volta dá 6+ jogos */
+function opcoesGrupos(n){ const o=[]; for(let g=1;g<=Math.max(1,Math.floor(n/4));g++) o.push(g); return o.length?o:[1]; }
 function tamanhos(n,g){ return Array.from({length:g},(_,i)=>Math.floor(n/g)+(i<n%g?1:0)); }
 
 /* jogadores: [{id,nome}] -> estado novo com grupos, times e jogos */
