@@ -40,7 +40,21 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);f
 .champ small{display:block;font-family:var(--cond);font-weight:700;font-size:1.15rem;color:var(--gold)}
 .champ b{display:block;font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2.4rem,9vw,4.2rem);line-height:1.05;margin-top:6px;
   text-shadow:4px 4px 0 var(--gold),8px 8px 0 var(--sky),12px 12px 0 var(--red)}
-.champ span{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:var(--cond);font-weight:600;font-size:1.1rem;color:#C9CCD3}
+.podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:8px;max-width:640px;margin:26px auto 0}
+.pod{display:flex;flex-direction:column;align-items:center;min-width:0}
+.pod .who{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 2px 10px;min-width:0;max-width:100%}
+.pod .who b{font-family:var(--body);font-weight:700;font-size:clamp(.9rem,3.4vw,1.1rem);text-transform:none;text-shadow:none;margin:0;line-height:1.2;overflow-wrap:anywhere}
+.pod .who em{font-style:normal;font-family:var(--cond);font-weight:600;font-size:.92rem;color:#C9CCD3;overflow-wrap:anywhere}
+.pod .who .tbd{color:#8D93A0;font-style:italic}
+.pod .esc{width:52px;height:52px;object-fit:contain}
+.pod.p1 .esc{width:72px;height:72px}
+.pod .step{width:100%;display:flex;justify-content:center;align-items:flex-start;padding-top:10px;color:var(--ink)}
+.pod .step span{font-family:var(--poster);font-size:clamp(1.8rem,7vw,2.8rem);line-height:1}
+.p1{order:2}.p1 .step{background:var(--gold);height:130px}
+.p2{order:1}.p2 .step{background:var(--sky);height:92px}
+.p3{order:3}.p3 .step{background:var(--red);height:66px;color:#fff}
+.podium:has(.pod:nth-child(2):last-child){grid-template-columns:repeat(2,minmax(0,1fr));max-width:440px}
+.champ > span{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:var(--cond);font-weight:600;font-size:1.1rem;color:#C9CCD3}
 
 .tabs{display:flex;gap:0;margin-top:26px;border:3px solid var(--ink);background:#fff;width:max-content;max-width:100%}
 .tabs button{font:inherit;font-family:var(--cond);font-weight:700;font-size:1.12rem;padding:10px 18px;border:0;background:transparent;color:var(--ink);cursor:pointer}
@@ -94,25 +108,26 @@ td.pts{font-family:var(--poster);font-size:1.25rem;font-weight:400}
 
 /* mata-mata */
 .bracket{display:flex;gap:22px;overflow-x:auto;padding-bottom:10px;align-items:stretch}
-.col{flex:0 0 min(300px,82vw);display:flex;flex-direction:column}
+.col{flex:0 0 min(350px,88vw);display:flex;flex-direction:column}
 .col h3{font-family:var(--cond);font-weight:800;font-size:1.25rem;margin:0 0 10px}
 .col .ties{display:flex;flex-direction:column;justify-content:space-around;gap:16px;flex:1}
 .tie{background:#fff;border:3px solid var(--ink)}
-.tie .hd{display:grid;grid-template-columns:minmax(0,1fr) 2.4em 2.9em 2.9em;font-family:var(--cond);font-weight:700;font-size:.8rem;color:var(--grey);padding:4px 8px 0;text-align:center}
-.tie.f .hd{grid-template-columns:minmax(0,1fr) 2.6em}
-.tie .hd span:first-child{text-align:left}
-.tie .row{display:grid;grid-template-columns:minmax(0,1fr) 2.4em 2.9em 2.9em;align-items:center;padding:7px 8px;text-align:center;font-variant-numeric:tabular-nums}
-.tie.f .row{grid-template-columns:minmax(0,1fr) 2.6em}
-.tie .row + .row{border-top:1px solid var(--line)}
-.tie .who{display:flex;align-items:center;gap:6px;text-align:left;min-width:0}
-.tie .who b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
-.tie .who small{font-family:var(--cond);font-weight:700;color:var(--grey);font-size:.85rem;min-width:1.1em}
-.tie .agg{font-family:var(--poster);font-size:1.2rem}
-.tie .row.w{background:#FFF4D6}
-.tie .row.w b{font-weight:800}
-.tie .row.l{color:var(--grey)}
+.vs{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:6px;padding:10px 8px}
+.vs .s{display:flex;align-items:center;gap:6px;min-width:0}
+.vs .esc{flex:none}
+.vs .s.home{justify-content:flex-end;text-align:right}
+.vs .s b{font-weight:600;line-height:1.15;overflow-wrap:break-word;min-width:0}
+.vs .s small{font-family:var(--cond);font-weight:700;color:var(--grey);font-size:.8rem}
+.vs .s.w b{font-weight:800}
+.vs .s.l{color:var(--grey)}
+.vs .s.l .esc{opacity:.55}
+.vs .sc{font-family:var(--poster);font-size:1.35rem;line-height:1;min-width:3.4em;text-align:center;font-variant-numeric:tabular-nums}
+.vs .sc.wait{font-family:var(--cond);font-weight:700;font-size:.9rem;color:var(--grey)}
 .tie .tbd{color:var(--grey);font-style:italic;font-weight:500}
-.tie .pen{font-family:var(--cond);font-weight:600;font-size:.9rem;color:var(--grey);padding:0 8px 6px;text-align:right}
+.tie .legs{border-top:1px solid var(--line);padding:5px 8px 7px;font-family:var(--cond);font-weight:600;font-size:.92rem;color:var(--grey);display:grid;gap:2px}
+.tie .legs div{display:flex;justify-content:space-between;gap:8px}
+.tie .legs strong{color:var(--ink);font-variant-numeric:tabular-nums}
+.tie .won{background:#FFF4D6;border-top:1px solid var(--line);padding:5px 8px;font-family:var(--cond);font-weight:700;font-size:.95rem}
 footer{border-top:3px solid var(--ink)}
 footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;padding-block:16px 26px;font-size:.92rem;color:var(--grey)}
 footer a{color:var(--ink);font-weight:700}
@@ -197,25 +212,44 @@ function mata(){
     $("p-mata").innerHTML=`<div class="empty" style="margin-top:0"><h2>Ainda não começou</h2><p>${falta?`O chaveamento sai quando a fase de grupos terminar. Faltam ${falta} ${falta===1?"jogo":"jogos"}.`:"A fase de grupos acabou. O chaveamento sai em instantes."}</p></div>`;
     return;
   }
-  const g=(o,id)=>{const v=o&&id in o?T.num(o[id]):null;return v===null?"":v;};
-  const row=(t,id,seed)=>{
-    if(!id) return `<div class="row"><span class="who"><b class="tbd">A definir</b></span>${t.final?"<span></span>":"<span></span><span></span><span></span>"}</div>`;
+  const g=(o,id)=>{const v=o&&id in o?T.num(o[id]):null;return v===null?null:v;};
+  const lado=(t,id,seed,home)=>{
+    if(!id) return `<span class="s ${home?"home":""}"><b class="tbd">A definir</b></span>`;
     const p=pl(id), cls=t.venc?(t.venc===id?"w":"l"):"";
-    const agg=t.agg?(id===t.a?t.agg[0]:t.agg[1]):"";
-    const cells=t.final?`<span class="agg">${g(t.res.jogo,id)}</span>`:`<span>${g(t.res.ida,id)}</span><span>${g(t.res.volta,id)}</span><span class="agg">${agg}</span>`;
-    return `<div class="row ${cls}"><span class="who"><small>${seed||""}</small>${T.escudo(p.time,20)}<b title="${esc(p.nome)}">${esc(p.nome)}</b></span>${cells}</div>`;
+    const nome=`<b title="${esc(p.nome)}">${esc(p.nome)}</b>`, sd=seed?`<small>${seed}º</small>`:"";
+    return `<span class="s ${home?"home":""} ${cls}">${home?sd+nome+T.escudo(p.time,22):T.escudo(p.time,22)+nome+sd}</span>`;
   };
-  $("p-mata").innerHTML=`<div class="bracket">${fs.map(f=>`<div class="col"><h3>${f.nome}</h3><div class="ties">${f.ties.map(t=>{
-      const pen=t.precisaPen&&t.res.pen&&t.a in t.res.pen&&t.b in t.res.pen?`<div class="pen">Pênaltis: ${esc(pl(t.a).nome.split(" ")[0])} ${t.res.pen[t.a]} × ${t.res.pen[t.b]} ${esc(pl(t.b).nome.split(" ")[0])}</div>`:"";
-      return `<div class="tie ${t.final?"f":""}"><div class="hd"><span></span>${t.final?"<span>Placar</span>":"<span>Ida</span><span>Volta</span><span>Total</span>"}</div>${row(t,t.a,t.seedA)}${row(t,t.b,t.seedB)}${pen}</div>`;}).join("")}</div></div>`).join("")}</div>
-    <p class="legend">O número antes do nome é a posição no ranking geral da fase de grupos. A ida é na casa de quem tem o número maior.</p>`;
+  const placar=(x,y)=>x===null||y===null?`<span class="sc wait">A jogar</span>`:`<span class="sc">${x} × ${y}</span>`;
+  const tie=(f,t)=>{
+    let principal;
+    if(t.final) principal=placar(g(t.res.jogo,t.a),g(t.res.jogo,t.b));
+    else principal=t.agg?placar(t.agg[0],t.agg[1]):placar(null,null);
+    let h=`<div class="tie"><div class="vs">${lado(t,t.a,t.seedA,true)}${principal}${lado(t,t.b,t.seedB,false)}</div>`;
+    const linhas=[];
+    if(!t.final&&t.a&&t.b){
+      const leg=(k,lbl,casa)=>{const x=g(t.res[k],t.a),y=g(t.res[k],t.b);return `<div><span>${lbl}, na casa de ${esc(pl(casa).nome.split(" ")[0])}</span><strong>${x===null||y===null?"–":`${x} × ${y}`}</strong></div>`;};
+      linhas.push(leg("ida","Ida",t.b),leg("volta","Volta",t.a));
+    }
+    if(t.precisaPen&&t.res.pen&&t.a in t.res.pen&&t.b in t.res.pen) linhas.push(`<div><span>Pênaltis</span><strong>${t.res.pen[t.a]} × ${t.res.pen[t.b]}</strong></div>`);
+    if(linhas.length) h+=`<div class="legs">${linhas.join("")}</div>`;
+    if(t.venc) h+=`<div class="won">${f.terceiro?"3º lugar":f.final?"Campeão":"Classificado"}: ${esc(pl(t.venc).nome)}</div>`;
+    return h+`</div>`;
+  };
+  $("p-mata").innerHTML=`<div class="bracket">${fs.map(f=>`<div class="col"><h3>${f.nome}</h3><div class="ties">${f.ties.map(t=>tie(f,t)).join("")}</div></div>`).join("")}</div>
+    <p class="legend">O número ao lado do nome é a posição no ranking geral da fase de grupos. O placar grande é o agregado. A ida é na casa de quem tem o número maior.</p>`;
 }
 
 function campeao(){
   const c=T.campeao(E), box=$("champ");
   if(!c){box.hidden=true;return;}
-  const p=pl(c);
-  box.innerHTML=`<small>Campeão da 1ª edição</small><b>${esc(p.nome)}</b><span>${T.escudo(p.time,24)}${esc(nomeTime(p.time))}</span>`;
+  const lugar=(id,n)=>{
+    if(!id) return `<div class="pod p${n}"><div class="who"><b class="tbd">A definir</b></div><div class="step"><span>${n}º</span></div></div>`;
+    const p=pl(id);
+    return `<div class="pod p${n}"><div class="who">${T.escudo(p.time,n===1?48:36)}<b>${esc(p.nome)}</b><em>${esc(nomeTime(p.time))}</em></div><div class="step"><span>${n}º</span></div></div>`;
+  };
+  const temTerceiro=T.fases(E).some(f=>f.terceiro);
+  box.innerHTML=`<small>Pódio da 1ª edição</small><b>${esc(pl(c).nome)} é o campeão</b>
+    <div class="podium">${lugar(T.vice(E),2)}${lugar(c,1)}${temTerceiro?lugar(T.terceiro(E),3):""}</div>`;
   box.hidden=false;
 }
 

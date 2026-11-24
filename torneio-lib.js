@@ -101,26 +101,37 @@ function fases(e){
   const m=e.mata; if(!m) return [];
   const k=m.seeds.length, seed=Object.fromEntries(m.seeds.map((id,i)=>[id,i+1])), o=ordemChave(k), out=[];
   let vivos=[]; for(let i=0;i<k/2;i++) vivos.push([m.seeds[o[2*i]-1],m.seeds[o[2*i+1]-1]]);
-  let r=0;
+  const avaliar=(a,b,key,final)=>{
+    const res=m.res[key]||{}, t={key,a,b,seedA:seed[a],seedB:seed[b],final,res,venc:null,perd:null,agg:null,precisaPen:false};
+    if(a&&b){
+      let ga,gb;
+      if(final){ ga=gols(res.jogo,a); gb=gols(res.jogo,b); }
+      else{ const i1=gols(res.ida,a),i2=gols(res.ida,b),v1=gols(res.volta,a),v2=gols(res.volta,b);
+        ga=[i1,v1].includes(null)?null:i1+v1; gb=[i2,v2].includes(null)?null:i2+v2;
+        t.parcial=[i1,i2].includes(null)?null:[i1,i2]; }
+      if(ga!==null&&gb!==null){
+        t.agg=[ga,gb];
+        if(ga>gb) t.venc=a; else if(gb>ga) t.venc=b;
+        else{ t.precisaPen=true; const pa=gols(res.pen,a),pb=gols(res.pen,b); if(pa!==null&&pb!==null&&pa!==pb) t.venc=pa>pb?a:b; }
+      }
+      if(t.venc) t.perd=t.venc===a?b:a;
+    }
+    return t;
+  };
+  let r=0, semis=null;
   while(vivos.length){
     const nTimes=vivos.length*2, final=nTimes===2, ties=[];
     vivos.forEach(([x,y],i)=>{
       let a=x,b=y; if(a&&b&&seed[b]<seed[a]) [a,b]=[b,a];
-      const key=`${r}-${i}`, res=m.res[key]||{}, t={key,a,b,seedA:seed[a],seedB:seed[b],final,res,venc:null,agg:null,precisaPen:false};
-      if(a&&b){
-        let ga,gb;
-        if(final){ ga=gols(res.jogo,a); gb=gols(res.jogo,b); }
-        else{ const i1=gols(res.ida,a),i2=gols(res.ida,b),v1=gols(res.volta,a),v2=gols(res.volta,b);
-          ga=[i1,v1].includes(null)?null:i1+v1; gb=[i2,v2].includes(null)?null:i2+v2;
-          t.parcial=[i1,i2].includes(null)?null:[i1,i2]; }
-        if(ga!==null&&gb!==null){
-          t.agg=[ga,gb];
-          if(ga>gb) t.venc=a; else if(gb>ga) t.venc=b;
-          else{ t.precisaPen=true; const pa=gols(res.pen,a),pb=gols(res.pen,b); if(pa!==null&&pb!==null&&pa!==pb) t.venc=pa>pb?a:b; }
-        }
-      }
+      const t=avaliar(a,b,`${r}-${i}`,final);
       ties.push(t);
     });
+    if(nTimes===4) semis=ties;
+    if(final&&semis){
+      let a=semis[0].perd,b=semis[1].perd; if(a&&b&&seed[b]<seed[a]) [a,b]=[b,a];
+      const t=avaliar(a,b,"t3",true); t.terceiro=true;
+      out.push({r:"t3",nome:"Disputa de 3º lugar",final:true,terceiro:true,ties:[t]});
+    }
     out.push({r,nome:NOMES_FASE[nTimes]||`Fase de ${nTimes}`,final,ties});
     if(final) break;
     const prox=[]; for(let i=0;i<ties.length;i+=2) prox.push([ties[i].venc,ties[i+1].venc]);
@@ -129,8 +140,10 @@ function fases(e){
   return out;
 }
 function campeao(e){ const f=fases(e); return f.length?f[f.length-1].ties[0].venc:null; }
+function vice(e){ const f=fases(e); return f.length?f[f.length-1].ties[0].perd:null; }
+function terceiro(e){ const f=fases(e).find(x=>x.terceiro); return f?f.ties[0].venc:null; }
 
 function escudo(abbr,size){ size=size||22; const t=TEAM[abbr]; return t?`<img class="esc" src="/escudos/${abbr}.webp" width="${size}" height="${size}" alt="" loading="lazy">`:""; }
 
-window.Torneio={TEAMS,TEAM,COUNTRY,esc,num,shuffle,gruposPadrao,opcoesGrupos,tamanhos,sortear,gerarJogos,jogado,classificacao,jogosFaltando,opcoesMata,mataPadrao,ranking,ordemChave,fases,campeao,escudo,NOMES_FASE};
+window.Torneio={TEAMS,TEAM,COUNTRY,esc,num,shuffle,gruposPadrao,opcoesGrupos,tamanhos,sortear,gerarJogos,jogado,classificacao,jogosFaltando,opcoesMata,mataPadrao,ranking,ordemChave,fases,campeao,vice,terceiro,escudo,NOMES_FASE};
 })();

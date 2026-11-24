@@ -71,8 +71,12 @@ td a{color:var(--navy);font-weight:600}
 .pl select{width:100%}
 .game{display:grid;grid-template-columns:minmax(0,1fr) 3.4em auto 3.4em minmax(0,1fr);gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
 .game:last-child{border-bottom:0}
-.game .h{text-align:right}
+.game .h{text-align:right;display:flex;justify-content:flex-end;align-items:center;gap:6px}
+.game .a{display:flex;align-items:center;gap:6px}
+.game .esc{flex:none}
 .game span{overflow-wrap:anywhere;font-weight:600}
+.game .h,.game .a{min-width:0}
+.game .nm{font-weight:inherit;min-width:0;overflow-wrap:break-word}
 .game .x{font-family:var(--cond);font-weight:700;color:var(--grey)}
 .game.done span{font-weight:700}
 .lbl{font-family:var(--cond);font-weight:700;color:var(--grey);font-size:.95rem;grid-column:1/-1;margin-bottom:-4px}
@@ -86,6 +90,16 @@ input.sc:focus{outline:3px solid var(--gold);outline-offset:0}
 .rank li .n{font-family:var(--cond);font-weight:800}
 .rank li small{color:var(--grey)}
 .tie{border:2px solid var(--ink);padding:10px 12px;margin-bottom:12px;background:var(--paper)}
+.podio{border:3px solid var(--ink);background:var(--ink);color:#fff;padding:12px 14px;margin:8px 0 16px}
+.podio h3{color:var(--gold);margin:0 0 8px}
+.podio ol{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.podio li{display:flex;align-items:center;gap:10px;min-width:0}
+.podio li span:last-child{min-width:0}
+.podio .n{font-family:var(--poster);font-size:1.5rem;width:1.8em;color:var(--gold)}
+.podio .p2 .n{color:#1C9BEF}.podio .p3 .n{color:var(--red)}
+.podio b{display:block;overflow-wrap:anywhere}
+.podio small{display:block;font-family:var(--cond);font-weight:600;color:#C9CCD3}
+.podio .muted{color:#C9CCD3}
 .tie h4{font-family:var(--cond);font-weight:800;font-size:1.1rem;margin:0 0 4px}
 .tie .res{font-family:var(--cond);font-weight:700;margin-top:6px}
 .badge{font-family:var(--cond);font-weight:700;font-size:.95rem;padding:2px 8px;white-space:nowrap}
@@ -106,7 +120,7 @@ input.sc:focus{outline:3px solid var(--gold);outline-offset:0}
   header h1{font-size:1.7rem}
 }
 .danger-zone{border-color:var(--err)}
-@media (max-width:560px){.game{grid-template-columns:minmax(0,1fr) 2.8em auto 2.8em minmax(0,1fr);font-size:.95rem}}
+@media (max-width:560px){.game{grid-template-columns:minmax(0,1fr) 2.6em auto 2.6em minmax(0,1fr);gap:5px;font-size:.92rem}.game .h,.game .a{flex-direction:column;gap:2px;line-height:1.15}.game .h{align-items:flex-end}.game .a{align-items:flex-start}.game .h .esc{order:-1}}
 </style>
 </head>
 <body>
@@ -278,7 +292,7 @@ function telaCampeonato(){
     <h3>Grupos e clubes</h3>${caixasGrupos(E)}`;
   const rods=[...new Set(E.jogos.map(j=>j.r))].sort((a,b)=>a-b);
   h+=`<h3>Jogos</h3><div class="rodadas">${rods.map(r=>`<div><h3 style="margin-top:8px">Rodada ${r}</h3>${E.jogos.filter(j=>j.r===r).map(j=>`<div class="game ${T.jogado(j)?"done":""}">${E.grupos.length>1?`<span class="lbl">${esc(E.grupos[j.g].nome)}</span>`:""}
-      <span class="h">${esc(pl(j.casa).nome)}</span>${inputGol("gc-"+j.id,j.gc,"Gols de "+pl(j.casa).nome)}<span class="x">×</span>${inputGol("gf-"+j.id,j.gf,"Gols de "+pl(j.fora).nome)}<span>${esc(pl(j.fora).nome)}</span></div>`).join("")}</div>`).join("")}</div></div>`;
+      <span class="h"><b class="nm">${esc(pl(j.casa).nome)}</b>${T.escudo(pl(j.casa).time,22)}</span>${inputGol("gc-"+j.id,j.gc,"Gols de "+pl(j.casa).nome)}<span class="x">×</span>${inputGol("gf-"+j.id,j.gf,"Gols de "+pl(j.fora).nome)}<span class="a">${T.escudo(pl(j.fora).time,22)}<b class="nm">${esc(pl(j.fora).nome)}</b></span></div>`).join("")}</div>`).join("")}</div></div>`;
   /* mata-mata */
   h+=`<div class="card"><h2>Mata-mata</h2>`+(E.mata?telaMata():telaGerarMata(falta))+`</div>`;
   h+=`<div class="card danger-zone"><h2>Recomeçar</h2><p>Apaga grupos, jogos e placares da página pública. As inscrições continuam salvas.</p><button class="danger" id="apagar">Apagar campeonato</button></div>`;
@@ -302,23 +316,29 @@ function telaGerarMata(falta){
 }
 function telaMata(){
   const fs=T.fases(E);
-  let h=`<p>Ida e volta em todas as fases, menos a final. Se o placar agregado empatar, aparece o campo de pênaltis.</p>`;
+  let h=`<p>Ida e volta em todas as fases, menos a disputa de 3º lugar e a final. Se o placar agregado empatar, aparece o campo de pênaltis.</p>`;
   fs.forEach(f=>{
     h+=`<h3>${f.nome}</h3>`;
     f.ties.forEach((t,i)=>{
-      const titulo=f.final?"Final":`Confronto ${i+1}`;
-      if(!t.a||!t.b){h+=`<div class="tie"><h4>${titulo}</h4><span class="muted">Aguardando o confronto anterior.</span></div>`;return;}
+      const titulo=f.terceiro?"3º lugar":f.final?"Final":`Confronto ${i+1}`;
+      if(!t.a||!t.b){h+=`<div class="tie"><h4>${titulo}</h4><span class="muted">${f.terceiro?"Aguardando as semifinais.":"Aguardando o confronto anterior."}</span></div>`;return;}
       const A=pl(t.a).nome,B=pl(t.b).nome, g=(leg,id)=>t.res[leg]&&id in t.res[leg]?t.res[leg][id]:null;
-      const linha=(leg,lbl,c,fo)=>`<div class="game"><span class="lbl">${lbl}</span><span class="h">${esc(pl(c).nome)}</span>${inputGol(`k-${t.key}-${leg}-${c}`,g(leg,c),"Gols de "+pl(c).nome)}<span class="x">×</span>${inputGol(`k-${t.key}-${leg}-${fo}`,g(leg,fo),"Gols de "+pl(fo).nome)}<span>${esc(pl(fo).nome)}</span></div>`;
+      const linha=(leg,lbl,c,fo)=>`<div class="game"><span class="lbl">${lbl}</span><span class="h"><b class="nm">${esc(pl(c).nome)}</b>${T.escudo(pl(c).time,22)}</span>${inputGol(`k-${t.key}-${leg}-${c}`,g(leg,c),"Gols de "+pl(c).nome)}<span class="x">×</span>${inputGol(`k-${t.key}-${leg}-${fo}`,g(leg,fo),"Gols de "+pl(fo).nome)}<span class="a">${T.escudo(pl(fo).time,22)}<b class="nm">${esc(pl(fo).nome)}</b></span></div>`;
       h+=`<div class="tie"><h4>${titulo}: ${esc(A)} × ${esc(B)}</h4>`;
-      h+=f.final?linha("jogo","Jogo único (com prorrogação)",t.a,t.b):linha("ida","Ida",t.b,t.a)+linha("volta","Volta",t.a,t.b);
+      h+=f.final?linha("jogo",f.terceiro?"Jogo único (empate vai direto pros pênaltis)":"Jogo único (com prorrogação)",t.a,t.b):linha("ida","Ida",t.b,t.a)+linha("volta","Volta",t.a,t.b);
       if(t.precisaPen) h+=linha("pen","Pênaltis",t.a,t.b);
       if(t.agg&&!f.final) h+=`<div class="res">Agregado: ${esc(A)} ${t.agg[0]} × ${t.agg[1]} ${esc(B)}</div>`;
-      if(t.venc) h+=`<div class="res" style="color:var(--ok)">${f.final?"Campeão":"Classificado"}: ${esc(pl(t.venc).nome)}</div>`;
+      if(t.venc) h+=`<div class="res" style="color:var(--ok)">${f.terceiro?"3º lugar":f.final?"Campeão":"Classificado"}: ${esc(pl(t.venc).nome)}</div>`;
       else if(t.precisaPen) h+=`<div class="res muted">Empate no ${f.final?"placar":"agregado"}. Lance os pênaltis.</div>`;
       h+=`</div>`;
     });
   });
+  const c=T.campeao(E);
+  if(c){
+    const temT=fs.some(f=>f.terceiro);
+    const lug=(id,n)=>`<li class="p${n}"><span class="n">${n}º</span>${id?`${T.escudo(pl(id).time,n===1?34:28)}<span><b>${esc(pl(id).nome)}</b><small>${esc((T.TEAM[pl(id).time]||{}).nome||"")}</small></span>`:`<span class="muted">A definir</span>`}</li>`;
+    h+=`<div class="podio"><h3>Pódio</h3><ol>${lug(c,1)}${lug(T.vice(E),2)}${temT?lug(T.terceiro(E),3):""}</ol><p class="muted">É o mesmo pódio que aparece na página pública.</p></div>`;
+  }
   h+=`<button class="danger" id="desfazer-mata">Desfazer mata-mata</button>`;
   return h;
 }
