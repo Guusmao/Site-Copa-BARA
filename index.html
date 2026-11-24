@@ -136,6 +136,21 @@ form,.done{padding:26px 26px 28px;display:grid;gap:20px;align-content:start}
   .entry{grid-template-columns:1fr;box-shadow:6px 6px 0 var(--ink)}
   .stub{border-right:0;border-bottom:3px dashed var(--ink)}
 }
+.go.pay{background:var(--navy);box-shadow:inset 0 -6px 0 var(--gold)}
+.pay-card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px 28px;align-items:center;max-width:900px;margin:44px auto 0;border:3px solid var(--ink);background:var(--field);padding:24px;box-shadow:10px 10px 0 var(--navy);scroll-margin-top:16px}
+.pay-qr{width:226px;display:grid;gap:10px;align-self:start}
+.pay-qr img{display:block;width:226px;height:226px;border:3px solid var(--ink)}
+.pay-info{display:grid;gap:12px;align-content:start}
+.pay-info h2{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2rem,5vw,2.8rem);line-height:.95;margin:0}
+.pay-info p{margin:0;max-width:52ch}
+.pay-key{border:2px dashed var(--ink);padding:10px 12px;background:var(--paper)}
+.pay-key small{display:block;font-family:var(--cond);font-weight:700;font-size:1rem;color:var(--grey)}
+.pay-key code{display:block;font-family:var(--body);font-weight:700;font-size:1.05rem;overflow-wrap:anywhere}
+.pay-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pay-btns .go{font-size:clamp(1rem,2.6vw,1.2rem);padding:13px 12px}
+.go.alt{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 3px var(--ink)}
+.go.alt:hover{background:var(--paper)}
+@media (max-width:720px){.pay-card{grid-template-columns:1fr;justify-items:start;box-shadow:6px 6px 0 var(--navy);padding:20px}.pay-qr{justify-self:center}.pay-btns{grid-template-columns:1fr;width:100%}}
 footer{border-top:3px solid var(--ink)}
 footer .credit{flex-basis:100%;margin:6px 0 0;padding-top:12px;border-top:1px solid currentColor;border-top-color:rgba(0,0,0,.15)}
 footer .credit strong{color:var(--ink)}
@@ -155,7 +170,7 @@ footer a{color:var(--ink);font-weight:700}
     <div class="billing">
       <div><small>Edição</small><b>1ª Copa Bara de FIFA</b></div>
       <div><small>Vagas</small><b>Abertas</b><span>Grupos e mata-mata montados de acordo com o número de inscritos.</span></div>
-      <div><small>Inscrição</small><b>R$ 10</b><span>Taxa por jogador.</span></div>
+      <div><small>Inscrição</small><b>R$ 10</b><span>Taxa por jogador, paga pelo Pix. <a href="#pagamento" style="color:#fff;font-weight:700">Ver como pagar</a></span></div>
       <div><small>Data</small><b>19 de dezembro</b><span>Sábado. Local e horário saem no grupo do WhatsApp.</span></div>
     </div>
   </div>
@@ -184,11 +199,28 @@ footer a{color:var(--ink);font-weight:700}
     </form>
     <div class="done" id="done" hidden>
       <h3 id="done-title">Tá dentro!</h3>
-      <p>Agora entra no grupo da Copa BARA no WhatsApp. É lá que sai a data, o sorteio dos times e a tabela.</p>
+      <p>Falta pouco: paga a taxa de R$ 10 pelo Pix aqui embaixo e entra no grupo da Copa no WhatsApp. É lá que saem o local, o horário e o sorteio dos times.</p>
+      <a class="go pay" href="#pagamento">Pagar os R$ 10 no Pix</a>
       <a class="go wa" id="wa" href="#" target="_blank" rel="noopener">Entrar no grupo do WhatsApp</a>
       <span class="hint" id="wa-note"></span>
     </div>
   </div>
+  <section class="pay-card" id="pagamento" aria-labelledby="pay-h">
+    <div class="pay-qr"><img src="/pix-qr.svg" width="220" height="220" alt="QR Code do Pix de R$ 10 para a inscrição">
+      <div class="pay-key"><small>Chave Pix</small><code id="pix-key">5c7615c1-7307-44f5-b783-61004af3739f</code></div>
+    </div>
+    <div class="pay-info">
+      <h2 id="pay-h">Pagamento da inscrição</h2>
+      <p>R$ 10 por jogador. Aponta a câmera do app do banco pro QR Code, ou copia a chave Pix.</p>
+      <p class="pay-to">Pra <b>Henderson Levy de Oliveira Lopes</b>, Nubank.</p>
+      <div class="pay-btns">
+        <button type="button" class="go" data-copy="5c7615c1-7307-44f5-b783-61004af3739f">Copiar chave Pix</button>
+        <button type="button" class="go alt" data-copy="00020126580014br.gov.bcb.pix01365c7615c1-7307-44f5-b783-61004af3739f520400005303986540510.005802BR5914HENDERSON LEVY6009FORTALEZA62070503***630412D8">Copiar Pix copia e cola</button>
+      </div>
+      <p class="hint" id="pay-status" role="status"></p>
+      <p class="hint">Prefere pelo link? <a href="https://nubank.com.br/cobrar/5c9jy/6b04f2bb-78a7-455d-8b43-f8128d1dee3e" target="_blank" rel="noopener" style="color:inherit;font-weight:700">Pagar pelo link do Nubank</a>. Depois manda o comprovante no grupo.</p>
+    </div>
+  </section>
 </main>
 <footer><div class="wrap"><a href="/campeonato">Tabela e jogos</a><a href="/regulamento">Ler o regulamento</a><p class="credit">Site feito por <strong>Felipe Gusmão</strong></p></div></footer>
 
@@ -309,9 +341,14 @@ form.addEventListener("submit",async e=>{
   form.hidden=true; const d=document.getElementById("done"); d.hidden=false;
   document.getElementById("done-title").textContent=`${name.split(" ")[0]}, tá dentro!`;
   const wa=document.getElementById("wa"), note=document.getElementById("wa-note");
-  if(WA){wa.href=WA; note.textContent="Abrindo o grupo…"; setTimeout(()=>{window.location.href=WA},1800);}
+  if(WA){wa.href=WA; note.textContent="";}
   else{wa.removeAttribute("href"); wa.setAttribute("aria-disabled","true"); note.textContent="O link do grupo sai em breve. A organização vai te chamar no WhatsApp.";}
 });
+document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{
+  const st=document.getElementById("pay-status");
+  try{await navigator.clipboard.writeText(b.dataset.copy);st.textContent=b.textContent.includes("chave")?"Chave copiada. Cola na área Pix do seu banco.":"Código copiado. No banco, escolhe Pix copia e cola e cola o código.";}
+  catch(e){st.textContent="Não deu pra copiar. Seleciona a chave acima e copia na mão.";}
+}));
 })();
 </script>
 </body>
