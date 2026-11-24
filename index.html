@@ -170,7 +170,7 @@ footer a{color:var(--ink);font-weight:700}
     <div class="billing">
       <div><small>Edição</small><b>1ª Jesus Cup de FIFA</b></div>
       <div><small>Vagas</small><b>Abertas</b><span>Grupos e mata-mata montados de acordo com o número de inscritos.</span></div>
-      <div><small>Inscrição</small><b>R$ 10</b><span>Taxa por jogador, paga pelo Pix. <a href="#pagamento" style="color:#fff;font-weight:700">Ver como pagar</a></span></div>
+      <div><small>Inscrição</small><b>R$ 10</b><span>Taxa por jogador, paga pelo Pix depois da inscrição.</span></div>
       <div><small>Data</small><b>19 de dezembro</b><span>Sábado, às 14h. O local sai no grupo do WhatsApp.</span></div>
     </div>
   </div>
@@ -204,7 +204,7 @@ footer a{color:var(--ink);font-weight:700}
       <span class="hint" id="wa-note"></span>
     </div>
   </div>
-  <section class="pay-card" id="pagamento" aria-labelledby="pay-h">
+  <section class="pay-card" id="pagamento" aria-labelledby="pay-h" hidden>
     <div class="pay-qr"><img src="/pix-qr.svg" width="220" height="220" alt="QR Code do Pix de R$ 10 para a inscrição">
       <div class="pay-key"><small>Chave Pix</small><code id="pix-key">5c7615c1-7307-44f5-b783-61004af3739f</code></div>
     </div>
@@ -336,7 +336,7 @@ form.addEventListener("submit",async e=>{
   }
   if(typeof data.pagos==="number") showCount(data.pagos);
   WA=data.whatsapp||WA;
-  form.hidden=true; const d=document.getElementById("done"); d.hidden=false;
+  form.hidden=true; const d=document.getElementById("done"); d.hidden=false; document.getElementById("pagamento").hidden=false;
   document.getElementById("done-title").textContent=`${name.split(" ")[0]}, tá dentro!`;
   const wa=document.getElementById("wa"), note=document.getElementById("wa-note");
   if(WA){wa.href=WA; note.textContent="";}
