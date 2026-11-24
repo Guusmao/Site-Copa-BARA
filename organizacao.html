@@ -231,22 +231,23 @@ function render(){
 }
 
 function jogadoresEscolhidos(){
-  return [...inscritos.map(p=>({id:"i"+p.id,nome:p.nome})),...extras].filter(p=>!fora.has(p.id));
+  return [...inscritos.filter(p=>p.pago).map(p=>({id:"i"+p.id,nome:p.nome})),...extras].filter(p=>!fora.has(p.id));
 }
 function telaSorteio(){
   const js=jogadoresEscolhidos(), n=js.length;
   const ops=T.opcoesGrupos(n); if(!gruposManual||!ops.includes(nGrupos)) nGrupos=T.gruposPadrao(n);
   const tam=T.tamanhos(n,nGrupos);
-  const lista=[...inscritos.map(p=>({id:"i"+p.id,nome:p.nome,pago:p.pago})),...extras];
+  const lista=[...inscritos.map(p=>({id:"i"+p.id,nome:p.nome,pago:p.pago})),...extras.map(p=>({...p,pago:true}))], pend=lista.filter(p=>!p.pago).length;
   return `<div class="card"><h2>Sorteio</h2>
-    <p>Marque quem vai jogar. Quem já pagou vem marcado. Dá pra incluir alguém que não se inscreveu pelo site. Depois escolha quantos grupos e sorteie: cada jogador recebe um clube 4 estrelas e um grupo.</p>
-    <div class="row" style="gap:8px;margin-top:6px"><button class="mini" id="sel-todos">Selecionar todos</button><button class="mini" id="sel-pagos">Só os pagos</button><button class="mini" id="sel-nenhum">Limpar seleção</button><span class="muted">${n} de ${lista.length} selecionados</span></div>
-    <div class="checks">${lista.map(p=>`<label><input type="checkbox" data-sel="${esc(p.id)}" ${fora.has(p.id)?"":"checked"}> ${esc(p.nome)}${p.id.startsWith("x")?' <small class="muted">(incluído aqui)</small>':p.pago?"":' <small class="muted">(aguardando pagamento)</small>'}</label>`).join("")||'<span class="muted">Ninguém inscrito ainda.</span>'}</div>
+    <p>Só entra no sorteio quem já pagou. Marque quem vai jogar. Dá pra incluir alguém que não se inscreveu pelo site. Depois escolha quantos grupos e sorteie: cada jogador recebe um clube 4 estrelas e um grupo.</p>
+    <div class="row" style="gap:8px;margin-top:6px"><button class="mini" id="sel-todos">Selecionar todos os pagos</button><button class="mini" id="sel-nenhum">Limpar seleção</button></div>
+    <p class="status" style="margin:10px 0 0">${n} ${n===1?"jogador pago selecionado":"jogadores pagos selecionados"}.${pend?` <span class="muted" style="font-weight:600">${pend} aguardando pagamento ${pend===1?"fica":"ficam"} de fora até a organização marcar como pago.</span>`:""}</p>
+    <div class="checks">${lista.map(p=>`<label class="${p.pago?"":"muted"}"><input type="checkbox" data-sel="${esc(p.id)}" ${p.pago&&!fora.has(p.id)?"checked":""} ${p.pago?"":"disabled"}> ${esc(p.nome)}${p.id.startsWith("x")?' <small class="muted">(incluído aqui)</small>':p.pago?"":' <small class="muted">(aguardando pagamento)</small>'}</label>`).join("")||'<span class="muted">Ninguém inscrito ainda.</span>'}</div>
     <div class="row" style="align-items:end;margin-bottom:16px"><div class="f" style="max-width:320px"><label class="t" for="extra">Incluir jogador</label><input id="extra" type="text" maxlength="60" placeholder="Nome e sobrenome"></div><button class="alt" id="add-extra">Incluir</button></div>
     <div class="row" style="margin-bottom:16px"><label class="t" for="ngr" style="margin:0">Grupos</label>
       <select id="ngr">${ops.map(g=>`<option value="${g}" ${g===nGrupos?"selected":""}>${g}</option>`).join("")}</select>
       <span class="muted">${n} ${n===1?"jogador":"jogadores"}${n?`: ${nGrupos===1?"grupo único":"grupos"} de ${[...new Set(tam)].sort((a,b)=>b-a).join(" e ")}`:""}. Ida e volta dentro do grupo.</span></div>
-    <button id="sortear" ${n<2?"disabled":""}>Sortear grupos e times</button>
+    <button id="sortear" ${n<2?"disabled":""}>Sortear ${n} ${n===1?"jogador":"jogadores"} pagos</button>
     <p class="status" id="st" style="margin-top:10px"></p></div>`;
 }
 function selTime(id,val,used){
@@ -258,6 +259,7 @@ function caixasGrupos(est){
 }
 function telaRascunho(){
   return `<div class="card"><h2>Resultado do sorteio</h2>
+    <p class="status ok" style="margin-bottom:8px">${Object.keys(rascunho.jogadores).length} jogadores pagos no sorteio. Quem ainda não pagou ficou de fora.</p>
     <p>Ainda não foi publicado. Se quiser, troque o clube de alguém ou sorteie de novo. Quando publicar, os grupos, os times e os jogos aparecem na página pública.</p>
     ${caixasGrupos(rascunho)}
     <div class="row" style="margin-top:16px"><button id="publicar">Publicar sorteio</button><button class="alt" id="resortear">Sortear de novo</button><button class="alt" id="voltar">Voltar</button></div>
@@ -355,9 +357,9 @@ function addExtra(){
 camp.addEventListener("click",async e=>{
   const b=e.target.closest("button"); if(!b) return;
   if(b.id==="add-extra") return addExtra();
-  if(b.id==="sel-todos"||b.id==="sel-pagos"||b.id==="sel-nenhum"){
+  if(b.id==="sel-todos"||b.id==="sel-nenhum"){
     const todos=[...inscritos.map(p=>({id:"i"+p.id,pago:p.pago})),...extras.map(p=>({id:p.id,pago:true}))];
-    fora=new Set(b.id==="sel-todos"?[]:b.id==="sel-nenhum"?todos.map(p=>p.id):todos.filter(p=>!p.pago).map(p=>p.id));
+    fora=new Set(b.id==="sel-todos"?[]:todos.map(p=>p.id));
     render(); return;
   }
   if(b.id==="sortear"||b.id==="resortear"){ rascunho=T.sortear(jogadoresEscolhidos(),nGrupos); msg="";render(); return; }
