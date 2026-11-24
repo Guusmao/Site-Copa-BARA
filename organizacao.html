@@ -144,7 +144,7 @@ const T=window.Torneio, esc=T.esc, $=id=>document.getElementById(id);
 const fmtPhone=d=>{d=String(d);const n=d.length>11?d.slice(-11):d;return n.length===11?`(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`:n.length===10?`(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`:d;};
 const waLink=d=>`https://wa.me/${String(d).length<=11?"55"+d:d}`;
 const fmtDate=s=>new Date(s).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
-let senha="", inscritos=[], vistos=new Set(), fora=new Set();
+let senha="", inscritos=[], vistos=new Set(), fora=new Set(), gruposManual=false;
 try{senha=sessionStorage.getItem("cb-senha")||"";}catch(e){}
 
 /* ---------------- inscritos ---------------- */
@@ -235,11 +235,12 @@ function jogadoresEscolhidos(){
 }
 function telaSorteio(){
   const js=jogadoresEscolhidos(), n=js.length;
-  const ops=T.opcoesGrupos(n); if(!ops.includes(nGrupos)) nGrupos=T.gruposPadrao(n);
+  const ops=T.opcoesGrupos(n); if(!gruposManual||!ops.includes(nGrupos)) nGrupos=T.gruposPadrao(n);
   const tam=T.tamanhos(n,nGrupos);
   const lista=[...inscritos.map(p=>({id:"i"+p.id,nome:p.nome,pago:p.pago})),...extras];
   return `<div class="card"><h2>Sorteio</h2>
     <p>Marque quem vai jogar. Quem já pagou vem marcado. Dá pra incluir alguém que não se inscreveu pelo site. Depois escolha quantos grupos e sorteie: cada jogador recebe um clube 4 estrelas e um grupo.</p>
+    <div class="row" style="gap:8px;margin-top:6px"><button class="mini" id="sel-todos">Selecionar todos</button><button class="mini" id="sel-pagos">Só os pagos</button><button class="mini" id="sel-nenhum">Limpar seleção</button><span class="muted">${n} de ${lista.length} selecionados</span></div>
     <div class="checks">${lista.map(p=>`<label><input type="checkbox" data-sel="${esc(p.id)}" ${fora.has(p.id)?"":"checked"}> ${esc(p.nome)}${p.id.startsWith("x")?' <small class="muted">(incluído aqui)</small>':p.pago?"":' <small class="muted">(aguardando pagamento)</small>'}</label>`).join("")||'<span class="muted">Ninguém inscrito ainda.</span>'}</div>
     <div class="row" style="align-items:end;margin-bottom:16px"><div class="f" style="max-width:320px"><label class="t" for="extra">Incluir jogador</label><input id="extra" type="text" maxlength="60" placeholder="Nome e sobrenome"></div><button class="alt" id="add-extra">Incluir</button></div>
     <div class="row" style="margin-bottom:16px"><label class="t" for="ngr" style="margin:0">Grupos</label>
@@ -325,7 +326,7 @@ const camp=$("camp");
 camp.addEventListener("change",e=>{
   const el=e.target;
   if(el.dataset.sel){ el.checked?fora.delete(el.dataset.sel):fora.add(el.dataset.sel); render(); return; }
-  if(el.id==="ngr"){ nGrupos=Number(el.value); render(); return; }
+  if(el.id==="ngr"){ nGrupos=Number(el.value); gruposManual=true; render(); return; }
   if(el.id==="kmata"){ kEscolhido=Number(el.value); render(); return; }
   if(el.dataset.time){ const est=E||rascunho; est.jogadores[el.dataset.time].time=el.value; if(E) salvar(E); setTimeout(render); return; }
   if(el.classList.contains("sc")){
@@ -354,6 +355,11 @@ function addExtra(){
 camp.addEventListener("click",async e=>{
   const b=e.target.closest("button"); if(!b) return;
   if(b.id==="add-extra") return addExtra();
+  if(b.id==="sel-todos"||b.id==="sel-pagos"||b.id==="sel-nenhum"){
+    const todos=[...inscritos.map(p=>({id:"i"+p.id,pago:p.pago})),...extras.map(p=>({id:p.id,pago:true}))];
+    fora=new Set(b.id==="sel-todos"?[]:b.id==="sel-nenhum"?todos.map(p=>p.id):todos.filter(p=>!p.pago).map(p=>p.id));
+    render(); return;
+  }
   if(b.id==="sortear"||b.id==="resortear"){ rascunho=T.sortear(jogadoresEscolhidos(),nGrupos); msg="";render(); return; }
   if(b.id==="voltar"){ rascunho=null; render(); return; }
   if(b.id==="publicar"){ b.disabled=true; E=rascunho; rascunho=null; versao=versao||0; await salvar(E); if(msgCls==="bad"&&!versao){rascunho=E;E=null;} render(); return; }
