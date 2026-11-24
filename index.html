@@ -26,6 +26,8 @@
 *{box-sizing:border-box}
 img{max-width:100%}
 [hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+h1,h2,h3,h4,b,strong,a,p,span,label{overflow-wrap:break-word}
 html{background:var(--paper)}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;position:relative}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.22;mix-blend-mode:multiply;
@@ -47,7 +49,7 @@ button,input{font:inherit;color:inherit}
 .kicker{grid-column:1/-1;display:flex;align-items:center;gap:12px;font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.16em;font-size:.86rem}
 .kicker i{flex:0 0 42px;height:3px;background:var(--gold)}
 .vem{font-family:var(--poster);font-weight:400;text-transform:uppercase;line-height:1.14;margin:0;letter-spacing:.005em;
-  font-size:clamp(5.4rem,23vw,15.5rem);transform:rotate(-4deg);transform-origin:left bottom;margin:18px 0 0 -4px;
+  font-size:clamp(5.4rem,23vw,15.5rem);transform:rotate(-4deg);transform-origin:left bottom;margin:18px 0 0 .1em;
   text-shadow:5px 5px 0 var(--gold),10px 10px 0 var(--sky),15px 15px 0 var(--red),20px 20px 0 var(--ink)}
 @media (prefers-reduced-motion:no-preference){
   .vem{animation:press .9s cubic-bezier(.2,.7,.2,1) .15s both}
@@ -64,11 +66,11 @@ button,input{font:inherit;color:inherit}
 .edge{display:grid;grid-template-columns:1fr 1fr 1fr;height:10px}
 .edge i:nth-child(1){background:var(--gold)} .edge i:nth-child(2){background:var(--sky)} .edge i:nth-child(3){background:var(--red)}
 @media (max-width:620px){
-  .poster .wrap{grid-template-columns:1fr}
+  .poster .wrap{grid-template-columns:minmax(0,1fr)}
   .shield{position:absolute;right:16px;top:58px;width:92px}
-  .vem{margin:92px 0 0 4px}
+  .vem{margin:92px 0 0 .1em}
   .shield{top:calc(env(safe-area-inset-top,0px) + 28px)}
-  .billing{grid-template-columns:1fr}
+  .billing{grid-template-columns:minmax(0,1fr)}
   .billing > div{padding-right:0}
   .billing > div:nth-child(even){border-left:0;padding-left:0}
   .billing > div + div{border-top:3px solid #fff}
@@ -102,15 +104,15 @@ button,input{font:inherit;color:inherit}
 /* entry ticket */
 main{padding-block:48px 40px}
 .entry{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);border:3px solid var(--ink);background:var(--field);box-shadow:10px 10px 0 var(--ink);max-width:900px;margin:0 auto}
-.stub{position:relative;background:var(--gold);padding:26px 24px;border-right:3px dashed var(--ink);display:flex;flex-direction:column;gap:14px}
-.stub h2{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2.4rem,6vw,3.4rem);line-height:.9;margin:0}
+.stub{min-width:0;position:relative;background:var(--gold);padding:26px 24px;border-right:3px dashed var(--ink);display:flex;flex-direction:column;gap:14px}
+.stub h2{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2rem,8.5vw,3.4rem);line-height:.9;margin:0}
 .stub p{margin:0;font-weight:500;max-width:30ch}
 .stub .no{margin-top:auto;font-family:var(--cond);font-weight:700;font-size:1.05rem;align-items:baseline;display:flex;justify-content:space-between;border-top:2px solid var(--ink);padding-top:10px}
 .stub .no b small{font-size:.9rem;margin-left:2px;opacity:.7}
 .stub .rules{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;color:var(--ink);font-family:var(--cond);font-weight:700;font-size:1.05rem;text-decoration:none;border-bottom:2px solid var(--ink);padding-bottom:2px}
 .stub .rules:hover{color:var(--navy);border-color:var(--navy)}
 .stub .no b{font-family:var(--poster);font-weight:400;font-size:1.6rem;letter-spacing:.02em;line-height:1;font-variant-numeric:tabular-nums}
-form,.done{padding:26px 26px 28px;display:grid;gap:20px;align-content:start}
+form,.done{min-width:0;padding:26px 26px 28px;display:grid;gap:20px;align-content:start}
 .field{display:grid;gap:4px}
 .field label{font-family:var(--cond);font-weight:700;font-size:1.05rem}
 .field input{border:0;border-bottom:3px solid var(--ink);background:transparent;padding:8px 0 6px;font-size:1.15rem;font-weight:600;border-radius:0;width:100%}
@@ -121,7 +123,7 @@ form,.done{padding:26px 26px 28px;display:grid;gap:20px;align-content:start}
 .err{color:var(--err);font-size:.86rem;font-weight:700}
 .err:empty{display:none}
 .go{display:flex;justify-content:center;align-items:center;gap:10px;border:0;background:var(--ink);color:#fff;padding:16px 20px;cursor:pointer;
-  font-family:var(--poster);font-weight:400;font-size:clamp(1.2rem,5vw,1.55rem);white-space:nowrap;letter-spacing:.01em;text-decoration:none;width:100%;
+  font-family:var(--poster);font-weight:400;font-size:clamp(1.2rem,5vw,1.55rem);text-align:center;line-height:1.1;letter-spacing:.01em;text-decoration:none;width:100%;
   box-shadow:inset 0 -6px 0 var(--red)}
 .go:hover{background:var(--navy)}
 .go:disabled{opacity:.6;cursor:wait}
@@ -132,8 +134,9 @@ form,.done{padding:26px 26px 28px;display:grid;gap:20px;align-content:start}
 .go[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
 .done h3{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2rem,6vw,2.8rem);line-height:.95;margin:0}
 .done p{margin:0;max-width:44ch}
+@media (max-width:420px){.stub,form,.done{padding:20px 16px 22px}.pay-card{padding:16px}.pay-qr,.pay-qr img{width:100%;height:auto;max-width:240px}}
 @media (max-width:720px){
-  .entry{grid-template-columns:1fr;box-shadow:6px 6px 0 var(--ink)}
+  .entry{grid-template-columns:minmax(0,1fr);box-shadow:6px 6px 0 var(--ink)}
   .stub{border-right:0;border-bottom:3px dashed var(--ink)}
 }
 .go.pay{background:var(--navy);box-shadow:inset 0 -6px 0 var(--gold)}
@@ -150,7 +153,7 @@ form,.done{padding:26px 26px 28px;display:grid;gap:20px;align-content:start}
 .pay-btns .go{font-size:clamp(1rem,2.6vw,1.2rem);padding:13px 12px}
 .go.alt{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 3px var(--ink)}
 .go.alt:hover{background:var(--paper)}
-@media (max-width:720px){.pay-card{grid-template-columns:1fr;justify-items:start;box-shadow:6px 6px 0 var(--navy);padding:20px}.pay-qr{justify-self:center}.pay-btns{grid-template-columns:1fr;width:100%}}
+@media (max-width:720px){.pay-card{grid-template-columns:minmax(0,1fr);justify-items:start;box-shadow:6px 6px 0 var(--navy);padding:20px}.pay-qr{justify-self:center}.pay-btns{grid-template-columns:minmax(0,1fr);width:100%}}
 footer{border-top:3px solid var(--ink)}
 footer .credit{flex-basis:100%;margin:6px 0 0;padding-top:12px;border-top:1px solid currentColor;border-top-color:rgba(0,0,0,.15)}
 footer .credit strong{color:var(--ink)}
@@ -187,7 +190,7 @@ footer a{color:var(--ink);font-weight:700}
   <div class="entry">
     <div class="stub">
       <h2>Ficha de inscrição</h2>
-      <p>Coloca seu nome pra gente saber quem vai jogar. Depois é só pagar a inscrição e entrar no grupo da Copa no WhatsApp.</p>
+      <p>Coloca seu nome e sobrenome pra entrar na Copa. Depois da inscrição aparecem o Pix da taxa e o grupo do WhatsApp.</p>
       <a class="rules" href="/regulamento">Ler o regulamento</a>
       <div class="no"><span>Confirmados (pagos)</span><b><span id="count">0</span></b></div>
     </div>

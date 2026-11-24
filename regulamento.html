@@ -16,6 +16,8 @@
 :root{color-scheme:light;--paper:#F4F4F1;--ink:#000000;--navy:#0A2387;--sky:#1C9BEF;--gold:#FFB000;--red:#E3122D;--grey:#5B5F69;--line:#CFD1D6;
   --poster:"Anton","Impact","Arial Narrow Bold",sans-serif;--cond:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;--body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif}
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+h1,h2,h3,h4,b,strong,a,p,span,label{overflow-wrap:break-word}
 html{background:var(--paper)}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
 .wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -29,7 +31,8 @@ a{color:var(--navy);font-weight:600}
 .head .wrap{display:flex;align-items:center;gap:18px;padding-block:28px 26px}
 .head img{width:76px;flex:none;transform:rotate(5deg);filter:drop-shadow(5px 5px 0 rgba(0,0,0,.4))}
 .head small{display:block;font-family:var(--cond);font-weight:700;font-size:1.1rem;color:var(--gold)}
-.head h1{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2.6rem,9vw,4.4rem);line-height:.92;margin:2px 0 0}
+@media (max-width:420px){.head img{width:54px}.head .wrap{gap:12px}}
+.head h1{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:clamp(2rem,9vw,4.4rem);line-height:.92;margin:2px 0 0}
 .edge{display:grid;grid-template-columns:1fr 1fr 1fr;height:8px}
 .edge i:nth-child(1){background:var(--gold)}.edge i:nth-child(2){background:var(--sky)}.edge i:nth-child(3){background:var(--red)}
 

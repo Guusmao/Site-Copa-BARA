@@ -11,6 +11,9 @@
 :root{--paper:#F4F4F1;--ink:#000000;--navy:#0A2387;--gold:#FFB000;--red:#E3122D;--grey:#5B5F69;--line:#D6D7DB;--err:#C40E27;--ok:#0F7A4F;
   --poster:"Anton","Impact",sans-serif;--cond:"Barlow Condensed","Arial Narrow",sans-serif;--body:"Barlow",system-ui,sans-serif;color-scheme:light}
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+h1,h2,h3,h4,b,strong,a,p,span,label{overflow-wrap:break-word}
+
 [hidden]{display:none!important}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
 .wrap{max-width:1000px;margin:0 auto;padding:0 16px}
@@ -19,7 +22,7 @@ header .wrap{display:flex;align-items:center;gap:14px;padding-block:16px}
 header img{width:44px}
 h1{font-family:var(--poster);font-weight:400;text-transform:uppercase;font-size:2rem;line-height:1;margin:0}
 h1 small{display:block;font-family:var(--cond);font-weight:700;font-size:1rem;color:var(--gold);text-transform:none}
-main{padding-block:24px 60px;display:grid;gap:20px}
+main{padding-block:24px 60px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
 form#login{display:flex;flex-wrap:wrap;gap:10px;align-items:end;max-width:460px}
 label.t{font-family:var(--cond);font-weight:700;font-size:1.05rem;display:block;margin-bottom:4px}
 input[type=password],input[type=text]{font:inherit;border:0;border-bottom:3px solid var(--ink);background:transparent;padding:8px 0;font-size:1.1rem;width:100%}
